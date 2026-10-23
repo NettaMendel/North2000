@@ -16,9 +16,10 @@ public final class Consts {
 
     protected static final String DB_FILEPATH = getDBPath();
     public static final String CONN_STR = "jdbc:ucanaccess://" + DB_FILEPATH + ";COLUMNORDER=DISPLAY";
-    
+
     /**
      * find the correct path of the DB file
+     * 
      * @return the path of the DB file (from eclipse or with runnable file)
      */
     private static String getDBPath() {
@@ -40,23 +41,16 @@ public final class Consts {
 
     public static final String SQL_SEL_EMPLOYEES = "SELECT * FROM TblEmployees";
     public static final String SQL_DEL_EMPLOYEE = "{ call qryDelEmployee(?) }";
-    public static final String SQL_INS_EMPLOYEE =
-            "{ call qryInsEmployee(?,?,?,?,?,?,?,?,?,?,?) }";
-    public static final String SQL_UPD_EMPLOYEE =
-            "{ call qryUpdEmployee(?,?,?,?,?,?,?,?,?,?,?,?) }";
+    public static final String SQL_INS_EMPLOYEE = "{ call qryInsEmployee(?,?,?,?,?,?,?,?,?,?,?) }";
+    public static final String SQL_UPD_EMPLOYEE = "{ call qryUpdEmployee(?,?,?,?,?,?,?,?,?,?,?,?) }";
 
     public static final String SQL_SEL_ORDERS = "SELECT * FROM TblOrders";
-    public static final String SQL_UPD_ORDER =
-            "{ call qryUpdOrder(?,?,?,?,?,?,?,?,?,?) }";
-    public static final String SQL_ADD_ORDER =
-            "{ call qryInsOrder(?,?,?,?,?,?,?,?,?) }";
-    public static final String SQL_DEL_ORDER =
-            "{ call qryDelOrder(?) }";
+    public static final String SQL_UPD_ORDER = "{ call qryUpdOrder(?,?,?,?,?,?,?,?,?,?) }";
+    public static final String SQL_ADD_ORDER = "{ call qryInsOrder(?,?,?,?,?,?,?,?,?) }";
+    public static final String SQL_DEL_ORDER = "{ call qryDelOrder(?) }";
 
-    public static final String SQL_DEL_ORDER_DETAILS =
-            "{ call qryDelOrderDetails(?) }";
-    public static final String SQL_DEL_ORDER_DETAILS_PRODUCT =
-            "{ call qryDelOrderDetailProduct(?,?) }";
+    public static final String SQL_DEL_ORDER_DETAILS = "{ call qryDelOrderDetails(?) }";
+    public static final String SQL_DEL_ORDER_DETAILS_PRODUCT = "{ call qryDelOrderDetailProduct(?,?) }";
 
     public static final String SQL_SEL_ORDER_DETAILS = "SELECT TblOrderDetails.orderID,TblOrderDetails.ProductID, TblOrderDetails.Quantity, TblOrderDetails.Discount, TblProducts.UnitPrice, [TblProducts].[UnitPrice]*[TblOrderDetails].[Quantity]*(1-[TblOrderDetails].[Discount]) AS LinePrice FROM TblProducts INNER JOIN TblOrderDetails ON TblProducts.ProductID = TblOrderDetails.ProductID WHERE (((TblOrderDetails.OrderID)=?));";
     public static final String SQL_UPD_ORDER_DETAILS = "{ call qryUpdOrderDetails(?,?,?,?) }";
