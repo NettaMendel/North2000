@@ -365,7 +365,7 @@ public class OrderLogic {
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next()) {
                     int i = 1;
-                    results.add(new OrderDetails(getOrder(rs.getLong(i++)), getProduct(rs.getLong(i++)),
+                    results.add(new OrderDetails(getOrder(rs.getLong(i++)), ProductLogic.getInstance().getProduct(rs.getLong(i++)),
                             rs.getString(i++), rs.getInt(i++), rs.getFloat(i++),
                             rs.getBigDecimal(i++), rs.getBigDecimal(i++)));
 
