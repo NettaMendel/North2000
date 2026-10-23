@@ -24,6 +24,11 @@ public class Customer {
 		this.fax = fax;
 	}
 	
+	public Customer(String customerID) {
+		this.CUSTOMER_ID = customerID;
+		this.companyName = "";
+	}
+
 	public Customer(String customerID, String companyName) {
 		if (customerID == null || customerID.isEmpty())
 			throw new IllegalArgumentException("customerID is required!");

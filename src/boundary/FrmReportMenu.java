@@ -71,7 +71,7 @@ public class FrmReportMenu extends JFrame {
 					return; // replace with error dialog!
 				final Product product = (Product) cbProduct.getSelectedItem();
 				OrderLogic.getInstance()
-						.compileProductOrdersByCountryReport(product.getProductID(), product.getProductName())
+						.compileProductOrdersByCountryReport(product.getProductID().intValue(), product.getProductName())
 						.setVisible(true);
 			}
 		});
