@@ -7,23 +7,23 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import entity.Consts;
 import entity.Product;
 
 public class ProductLogic {
 	private static ProductLogic instance;
-	
-	private ProductLogic() {}
-	
+
+	private ProductLogic() {
+	}
+
 	public static ProductLogic getInstance() {
 		if (instance == null)
 			instance = new ProductLogic();
 		return instance;
 	}
-	
+
 	public ArrayList<Product> getProducts() {
 		ArrayList<Product> result = new ArrayList<>();
-		
+
 		try {
 			Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
 			try (Connection conn = DriverManager.getConnection(Consts.CONN_STR);
@@ -39,7 +39,7 @@ public class ProductLogic {
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-		
+
 		return result;
 	}
 }
