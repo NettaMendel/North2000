@@ -4,15 +4,16 @@ import java.util.Date;
 
 public class Order {
 	private final long orderID;
-	private String customerID;
- 	private long employeeID;
+	
+	private Customer customer;
+ 	private Employee employee;
 
 
     private Date orderDate;
     private Date requiredDate;
     private Date shippedDate;
 
-    private int shipVia;
+    private Shipper shipVia;
     private String shipAddress;
     private String shipCity;
     private String shipCountry;
@@ -27,12 +28,12 @@ public class Order {
     public static final int MAX_SHIP_CITY = 15;
 
 
-	public Order(long orderID, String customerID, long employeeID, Date orderDate, Date requiredDate, Date shippedDate,
-			int shipVia, String shipAddress, String shipCity, String shipCountry) {
+	public Order(long orderID, Customer customer, Employee employee, Date orderDate, Date requiredDate, Date shippedDate,
+			Shipper shipVia, String shipAddress, String shipCity, String shipCountry) {
 		super();
 		this.orderID = orderID;
-		this.customerID = customerID;
-		this.employeeID = employeeID;
+		this.customer = customer;
+		this.employee = employee;
 		this.orderDate = orderDate;
 		this.requiredDate = requiredDate;
 		this.shippedDate = shippedDate;
@@ -75,24 +76,24 @@ public class Order {
 
 	@Override
 	public String toString() {
-		return "Order [orderID=" + orderID + ", customerID=" + customerID + ", employeeID=" + employeeID
+		return "Order [orderID=" + orderID + ", customer=" + customer + ", employee=" + employee
 				+ ", orderDate=" + orderDate + ", requiredDate=" + requiredDate + ", shippedDate=" + shippedDate
 				+ ", shipVia=" + shipVia + ", shipAddress=" + shipAddress + ", shipCity=" + shipCity + ", shipCountry="
 				+ shipCountry + "]";
 	}
 
 
-	public String getCustomerID() {
-		return customerID;
+	public Customer getcustomer() {
+		return customer;
 	}
-	public void setCustomerID(String customerID) {
-		this.customerID = customerID;
+	public void setcustomer(Customer customer) {
+		this.customer = customer;
 	}
-	public long getEmployeeID() {
-		return employeeID;
+	public Employee getemployee() {
+		return employee;
 	}
-	public void setEmployeeID(long employeeID) {
-		this.employeeID = employeeID;
+	public void setemployee(Employee employee) {
+		this.employee = employee;
 	}
 	public Date getOrderDate() {
 		return orderDate;
@@ -112,10 +113,10 @@ public class Order {
 	public void setShippedDate(Date shippedDate) {
 		this.shippedDate = shippedDate;
 	}
-	public int getShipVia() {
+	public Shipper getShipVia() {
 		return shipVia;
 	}
-	public void setShipVia(int shipVia) {
+	public void setShipVia(Shipper shipVia) {
 		this.shipVia = shipVia;
 	}
 	public String getShipAddress() {
