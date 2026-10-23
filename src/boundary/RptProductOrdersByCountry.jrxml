@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.4.3.final using JasperReports Library version 6.4.3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="RptProductOrdersByCountryController" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4734fa23-6679-4e7f-8cb4-87647f37b13c">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="UCA"/>
+	<parameter name="p1" class="java.lang.Integer">
+		<parameterDescription><![CDATA[productID]]></parameterDescription>
+	</parameter>
+	<parameter name="productName" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT TblOrders.ShipCountry, Count(TblOrders.OrderID) AS NumOfOrders
+FROM TblOrders INNER JOIN (TblProducts INNER JOIN TblOrderDetails ON TblProducts.ProductID = TblOrderDetails.ProductID) ON TblOrders.OrderID = TblOrderDetails.OrderID
+WHERE (((TblProducts.ProductID)=$P{p1}))
+GROUP BY TblOrders.ShipCountry
+ORDER BY TblOrders.ShipCountry;]]>
+	</queryString>
+	<field name="ShipCountry" class="java.lang.String">
+		<property name="net.sf.jasperreports.sql.field.column.name" value="ShipCountry"/>
+	</field>
+	<field name="NumOfOrders" class="java.lang.Number">
+		<property name="net.sf.jasperreports.sql.field.column.name" value="NumOfOrders"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="800" height="79" forecolor="#1900FF" uuid="07e03ade-df12-4a43-95f8-e547a735428b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="19" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[CONCATENATE($P{productName}, "'s Orders by Country")]]></textFieldExpression>
+			</textField>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="700" y="0" width="100" height="30" uuid="9ccb34dd-1723-439a-a206-cce809fc5002"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<summary>
+		<band height="474" splitType="Stretch">
+			<pieChart>
+				<chart evaluationTime="Report" theme="default">
+					<reportElement x="0" y="0" width="800" height="474" uuid="5bb3ea13-5c3c-4441-9ac1-3591db51f5e0"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<pieDataset>
+					<keyExpression><![CDATA[$F{ShipCountry}]]></keyExpression>
+					<valueExpression><![CDATA[$F{NumOfOrders}]]></valueExpression>
+				</pieDataset>
+				<piePlot labelFormat="{2}">
+					<plot/>
+					<itemLabel/>
+				</piePlot>
+			</pieChart>
+		</band>
+	</summary>
+</jasperReport>
