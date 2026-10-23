@@ -1,8 +1,8 @@
 package control;
 
-import model.Consts;
-import model.Consts.Manipulation;
-import model.Customer;
+import entity.Consts;
+import entity.Consts.Manipulation;
+import entity.Customer;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;

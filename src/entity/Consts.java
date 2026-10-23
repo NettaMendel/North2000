@@ -81,6 +81,12 @@ public final class Consts {
     public static final String  SQL_SEL_CUSTOMERS= "SELECT TblCustomers.CustomerID, TblCustomers.CompanyName FROM TblCustomers;";
     public static final String  SQL_SEL_SHIPPERS= "SELECT TblShippers.* FROM TblShippers;";
     public static final String  SQL_SEL_PRODUCTS= "SELECT TblProducts.* FROM TblProducts;";
+
+	public static final String SELECT_ALL_CUSTOMERS = "SELECT * FROM TblCustomers";
+    public static final String INSERT_CUSTOMER = "{ call qryInsertCustomer(?,?,?,?,?,?,?,?,?); }";
+    public static final String UPDATE_CUSTOMER = "{ call qryUpdateCustomer(?,?,?,?,?,?,?,?,?); }";
+	public static final String DELETE_CUSTOMER = "{ call qryDeleteCustomer(?); }";
+    
     private static String getDBPath() {
     	try {
     		String path = Consts.class.getProtectionDomain().getCodeSource().getLocation().getPath();
@@ -101,6 +107,10 @@ public final class Consts {
     	} catch (Exception e) {
     		e.printStackTrace();
     		return null;
+    	}
+
+		public enum Manipulation {
+    		UPDATE, INSERT, DELETE;
     	}
     }
 }
