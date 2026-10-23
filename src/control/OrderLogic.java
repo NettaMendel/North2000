@@ -28,7 +28,7 @@ import java.util.Date;
 import java.util.logging.Level;
 
 import control.*;
-import entity.* ;
+import entity.*;
 
 /**
  * Customer Orders Report controller.
@@ -36,14 +36,16 @@ import entity.* ;
 public class OrderLogic {
     /** Singleton instance. */
     private static OrderLogic instance;
-    
+
     /**
      * Private constructor for singleton purposes.
      */
-    private OrderLogic() {}
+    private OrderLogic() {
+    }
 
     /**
      * Singleton getter.
+     * 
      * @return instance of this.
      */
     public static OrderLogic getInstance() {
@@ -51,9 +53,10 @@ public class OrderLogic {
             instance = new OrderLogic();
         return instance;
     }
-    
+
     /**
      * Outputs report at runtime.
+     * 
      * @return JFrame containing the report viewer.
      */
     public JFrame compileCustomerOrdersReport() {
@@ -61,18 +64,19 @@ public class OrderLogic {
             Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
             try (Connection conn = DriverManager.getConnection(Consts.CONN_STR)) {
                 // Load the compiled Jasper report (.jasper file) from resources
-            	InputStream reportStream = getClass().getClassLoader().getResourceAsStream("boundary/RptCustomerOrders.jasper");
-            	if (reportStream == null) {
-            	    throw new IOException("Report file not found: boundary/RptCustomerOrders.jasper");
-            	}
+                InputStream reportStream = getClass().getClassLoader()
+                        .getResourceAsStream("boundary/RptCustomerOrders.jasper");
+                if (reportStream == null) {
+                    throw new IOException("Report file not found: boundary/RptCustomerOrders.jasper");
+                }
                 // Set report parameters
                 Map<String, Object> parameters = new HashMap<>();
 
-            	// Load report correctly
-            	JasperReport jasperReport = (JasperReport) JRLoader.loadObject(reportStream);
+                // Load report correctly
+                JasperReport jasperReport = (JasperReport) JRLoader.loadObject(reportStream);
 
-            	// Fill the report with data
-            	JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, conn);
+                // Fill the report with data
+                JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, conn);
 
                 // Display the report in a JFrame
                 JFrame frame = new JFrame("Customer Orders Report");
@@ -81,7 +85,7 @@ public class OrderLogic {
                 frame.pack();
                 return frame;
             } catch (SQLException | JRException | IOException e) {
-            	e.printStackTrace();
+                e.printStackTrace();
             }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -89,116 +93,122 @@ public class OrderLogic {
         return null;
     }
 
+    /////////////////////////////////////////////////////////////////
+    // READ ORDERS FROM DB
+    /////////////////////////////////////////////////////////////////
+    public ArrayList<Customer> getCustomers() {
+        ArrayList<Customer> results = new ArrayList<Customer>();
 
-  //////////////////////////////////////////////////////////////////
-  //READ ORDERS FROM DB
-  //////////////////////////////////////////////////////////////////
-    public ArrayList <Customer> getCustomers() {
-      	 ArrayList<Customer> results = new ArrayList<Customer>();
+        try {
+            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
+            try (Connection conn = DriverManager.getConnection(Consts.CONN_STR);
+                    PreparedStatement stmt = conn.prepareStatement(Consts.SQL_SEL_CUSTOMERS);
+                    ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    int i = 1;
+                    results.add(new Customer(rs.getString(i++), rs.getString(i++)));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
-   	        try {
-   	            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
-   	            try (Connection conn = DriverManager.getConnection(Consts.CONN_STR);
-   	                    PreparedStatement stmt =
-   	                            conn.prepareStatement(Consts.SQL_SEL_CUSTOMERS);
-   	                    ResultSet rs = stmt.executeQuery()) {
-   	                while (rs.next()) {
-   	                    int i = 1;
-   	                    results.add(new Customer(rs.getString(i++), rs.getString(i++) ));
-   	                }
-   	            } catch (SQLException e) {
-   	                e.printStackTrace();
-   	            }
-   	        } catch (ClassNotFoundException e) {
-   	            e.printStackTrace();
-   	        }
+        return results;
+    }
 
-   	        return results;
-      }
+    public ArrayList<Shipper> getshippers() {
+        ArrayList<Shipper> results = new ArrayList<Shipper>();
 
-    public ArrayList <Shipper> getshippers() {
-     	 ArrayList<Shipper> results = new ArrayList<Shipper>();
+        try {
+            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
+            try (Connection conn = DriverManager.getConnection(Consts.CONN_STR);
+                    PreparedStatement stmt = conn.prepareStatement(Consts.SQL_SEL_SHIPPERS);
+                    ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    int i = 1;
+                    results.add(new Shipper(rs.getLong(i++), rs.getString(i++)));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
-  	        try {
-  	            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
-  	            try (Connection conn = DriverManager.getConnection(Consts.CONN_STR);
-  	                    PreparedStatement stmt =
-  	                            conn.prepareStatement(Consts.SQL_SEL_SHIPPERS);
-  	                    ResultSet rs = stmt.executeQuery()) {
-  	                while (rs.next()) {
-  	                    int i = 1;
-  	                    results.add(new Shipper(rs.getLong(i++), rs.getString(i++) ));
-  	                }
-  	            } catch (SQLException e) {
-  	                e.printStackTrace();
-  	            }
-  	        } catch (ClassNotFoundException e) {
-  	            e.printStackTrace();
-  	        }
+        return results;
+    }
 
-  	        return results;
-     }
+    public ArrayList<Product> getProducts() {
+        ArrayList<Product> results = new ArrayList<Product>();
 
-    public ArrayList <Product> getProducts() {
-     	 ArrayList<Product> results = new ArrayList<Product>();
+        try {
+            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
+            try (Connection conn = DriverManager.getConnection(Consts.CONN_STR);
+                    PreparedStatement stmt = conn.prepareStatement(Consts.SQL_SEL_PRODUCTS);
+                    ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    int i = 1;
+                    results.add(new Product(Long.parseLong(rs.getString(i++)), rs.getString(i++),
+                            Long.parseLong(rs.getString(i++)), Long.parseLong(rs.getString(i++)),
+                            new BigDecimal(rs.getString(i++)), Integer.parseInt(rs.getString(i++))));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
-  	        try {
-  	            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
-  	            try (Connection conn = DriverManager.getConnection(Consts.CONN_STR);
-  	                    PreparedStatement stmt =
-  	                            conn.prepareStatement(Consts.SQL_SEL_PRODUCTS);
-  	                    ResultSet rs = stmt.executeQuery()) {
-  	                while (rs.next()) {
-  	                    int i = 1;
-  	                    results.add(new Product(Long.parseLong(rs.getString(i++)), rs.getString(i++),Long.parseLong(rs.getString(i++)),Long.parseLong(rs.getString(i++)),new BigDecimal( rs.getString(i++)),Integer.parseInt(rs.getString(i++)) ));
-  	                }
-  	            } catch (SQLException e) {
-  	                e.printStackTrace();
-  	            }
-  	        } catch (ClassNotFoundException e) {
-  	            e.printStackTrace();
-  	        }
+        return results;
+    }
 
-  	        return results;
-     }
-    
     public Product getProduct(long productID) {
-    	
-    	
+        for (Product p : getProducts()) {
+            if (p.getProductID() != null && p.getProductID() == productID) {
+                return p;
+            }
+        }
+        return null;
     }
 
+    public ArrayList<Order> getOrders() {
+        ArrayList<Order> results = new ArrayList<Order>();
 
-    public ArrayList <Order> getOrders() {
-   	 ArrayList<Order> results = new ArrayList<Order>();
+        try {
+            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
+            try (Connection conn = DriverManager.getConnection(Consts.CONN_STR);
+                    PreparedStatement stmt = conn.prepareStatement(Consts.SQL_SEL_ORDERS);
+                    ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    int i = 1;
+                    results.add(new Order(rs.getLong(i++), rs.getString(i++),
+                            rs.getLong(i++), rs.getDate(i++), rs.getDate(i++),
+                            rs.getDate(i++), rs.getInt(i++), rs.getString(i++),
+                            rs.getString(i++), rs.getString(i++)));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
-	        try {
-	            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
-	            try (Connection conn = DriverManager.getConnection(Consts.CONN_STR);
-	                    PreparedStatement stmt =
-	                            conn.prepareStatement(Consts.SQL_SEL_ORDERS);
-	                    ResultSet rs = stmt.executeQuery()) {
-	                while (rs.next()) {
-	                    int i = 1;
-	                    results.add(new Order(rs.getLong(i++), rs.getString(i++),
-	                            rs.getLong(i++), rs.getDate(i++), rs.getDate(i++),
-	                            rs.getDate(i++), rs.getInt(i++), rs.getString(i++),
-	                            rs.getString(i++), rs.getString(i++)));
-	                }
-	            } catch (SQLException e) {
-	                e.printStackTrace();
-	            }
-	        } catch (ClassNotFoundException e) {
-	            e.printStackTrace();
-	        }
+        return results;
+    }
 
-	        return results;
-   }
-    
     public Order getOrder(long OrderID) {
-    	
+        for (Order o : getOrders()) {
+            if (o.getOrderID() == OrderID) {
+                return o;
+            }
+        }
+        return null;
     }
-    public boolean addOrder(String customerID, long employeeID,Date orderDate,Date requiredDate,
-    		Date shippedDate,int shipVia,String shipAddress,String shipCity,String shipCountry) {
+
+    public boolean addOrder(String customerID, long employeeID, Date orderDate, Date requiredDate,
+            Date shippedDate, int shipVia, String shipAddress, String shipCity, String shipCountry) {
         try {
             Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
 
@@ -206,9 +216,8 @@ public class OrderLogic {
                     CallableStatement stmt = conn.prepareCall(Consts.SQL_ADD_ORDER)) {
                 int i = 1;
 
-                stmt.setString(i++, customerID);  // can't be null
+                stmt.setString(i++, customerID); // can't be null
                 stmt.setLong(i++, employeeID); // can't be null
-
 
                 if (orderDate != null)
                     stmt.setDate(i++, new java.sql.Date(orderDate.getTime()));
@@ -222,7 +231,6 @@ public class OrderLogic {
                     stmt.setDate(i++, new java.sql.Date(shippedDate.getTime()));
                 else
                     stmt.setNull(i++, java.sql.Types.DATE);
-
 
                 stmt.setInt(i++, shipVia); // can't be null
 
@@ -239,7 +247,6 @@ public class OrderLogic {
                 else
                     stmt.setNull(i++, java.sql.Types.VARCHAR);
 
-
                 stmt.executeUpdate();
                 return true;
             } catch (SQLException e) {
@@ -251,30 +258,31 @@ public class OrderLogic {
         return false;
     }
 
-	
     /**
      * outputs report in runtime.
+     * 
      * @return
      */
-	public JFrame compileProductOrdersByCountryReport(int productID, String productName) {
+    public JFrame compileProductOrdersByCountryReport(int productID, String productName) {
         try {
             Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
             try (Connection conn = DriverManager.getConnection(Consts.CONN_STR)) {
                 // Load the compiled Jasper report (.jasper file) from resources
-            	InputStream reportStream = getClass().getClassLoader().getResourceAsStream("boundary/RptProductOrdersByCountry.jasper");
-            	if (reportStream == null) {
-            	    throw new IOException("Report file not found: boundary/RptCustomerOrders.jasper");
-            	}
-            	
-            	HashMap<String, Object> params = new HashMap<>();
-            	params.put("p1", productID);
-            	params.put("productName", productName);
-            	// Load report correctly
-            	JasperReport jasperReport = (JasperReport) JRLoader.loadObject(reportStream);
+                InputStream reportStream = getClass().getClassLoader()
+                        .getResourceAsStream("boundary/RptProductOrdersByCountry.jasper");
+                if (reportStream == null) {
+                    throw new IOException("Report file not found: boundary/RptCustomerOrders.jasper");
+                }
 
-            	// Fill the report with data
-            	JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, conn);
-            	
+                HashMap<String, Object> params = new HashMap<>();
+                params.put("p1", productID);
+                params.put("productName", productName);
+                // Load report correctly
+                JasperReport jasperReport = (JasperReport) JRLoader.loadObject(reportStream);
+
+                // Fill the report with data
+                JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, conn);
+
                 JFrame frame = new JFrame("Product " + productName + "'s Orders By Country");
                 frame.getContentPane().add(new JRViewer(jasperPrint));
                 frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -283,13 +291,13 @@ public class OrderLogic {
             } catch (SQLException | JRException | NullPointerException e) {
                 e.printStackTrace();
             } catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        
+
         return null;
     }
 
@@ -298,13 +306,11 @@ public class OrderLogic {
             Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
 
             try (Connection conn = DriverManager.getConnection(Consts.CONN_STR);
-            		CallableStatement stmt1 = conn.prepareCall(Consts.SQL_DEL_ORDER_DETAILS);
+                    CallableStatement stmt1 = conn.prepareCall(Consts.SQL_DEL_ORDER_DETAILS);
 
-            		) {
+            ) {
                 stmt1.setLong(1, orderID);
                 stmt1.executeUpdate();
-
-
 
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -312,8 +318,7 @@ public class OrderLogic {
 
             try (Connection conn = DriverManager.getConnection(Consts.CONN_STR);
 
-            		CallableStatement stmt2 = conn.prepareCall(Consts.SQL_DEL_ORDER)
-            		) {
+                    CallableStatement stmt2 = conn.prepareCall(Consts.SQL_DEL_ORDER)) {
 
                 stmt2.setLong(1, orderID);
                 stmt2.executeUpdate();
@@ -327,8 +332,9 @@ public class OrderLogic {
         }
         return false;
     }
-    public boolean editOrder(long orderID, String customerID, long employeeID,Date orderDate,Date requiredDate,
-    		Date shippedDate,int shipVia,String shipAddress,String shipCity,String shipCountry) {
+
+    public boolean editOrder(long orderID, String customerID, long employeeID, Date orderDate, Date requiredDate,
+            Date shippedDate, int shipVia, String shipAddress, String shipCity, String shipCountry) {
         try {
             Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
 
@@ -336,9 +342,8 @@ public class OrderLogic {
                     CallableStatement stmt = conn.prepareCall(Consts.SQL_UPD_ORDER)) {
                 int i = 1;
 
-                stmt.setString(i++, customerID);  // can't be null
+                stmt.setString(i++, customerID); // can't be null
                 stmt.setLong(i++, employeeID); // can't be null
-
 
                 if (orderDate != null)
                     stmt.setDate(i++, new java.sql.Date(orderDate.getTime()));
@@ -352,7 +357,6 @@ public class OrderLogic {
                     stmt.setDate(i++, new java.sql.Date(shippedDate.getTime()));
                 else
                     stmt.setNull(i++, java.sql.Types.DATE);
-
 
                 stmt.setInt(i++, shipVia); // can't be null
 
@@ -382,61 +386,53 @@ public class OrderLogic {
         return false;
     }
 
+    public ArrayList<OrderDetails> getOrderDetails(long orderID) {
+        ArrayList<OrderDetails> results = new ArrayList<OrderDetails>();
 
+        try {
+            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
+            try (Connection conn = DriverManager.getConnection(Consts.CONN_STR);
+                    PreparedStatement stmt = conn.prepareStatement(Consts.SQL_SEL_ORDER_DETAILS);) {
 
-    public ArrayList <OrderDetails> getOrderDetails(long orderID) {
-   	 ArrayList<OrderDetails> results = new ArrayList<OrderDetails>();
+                stmt.setLong(1, orderID);
+                ResultSet rs = stmt.executeQuery();
+                while (rs.next()) {
+                    int i = 1;
+                    results.add(new OrderDetails(rs.getLong(i++), rs.getLong(i++),
+                            rs.getString(i++), rs.getInt(i++), rs.getFloat(i++),
+                            rs.getBigDecimal(i++), rs.getBigDecimal(i++)));
 
-	        try {
-	            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
-	            try (Connection conn = DriverManager.getConnection(Consts.CONN_STR);
-	                    PreparedStatement stmt =
-	                            conn.prepareStatement(Consts.SQL_SEL_ORDER_DETAILS);)
-	            {
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
-	            	stmt.setLong(1, orderID);
-	            	ResultSet rs = stmt.executeQuery();
-	                while (rs.next()) {
-	                    int i = 1;
-	                    results.add(new OrderDetails(rs.getLong(i++), rs.getLong(i++),
-	                            rs.getString(i++), rs.getInt(i++), rs.getFloat(i++),
-	                            rs.getBigDecimal(i++), rs.getBigDecimal(i++)));
+        return results;
+    }
 
+    public boolean editOrderDetails(long orderID, long productID, int quantity, float discount) {
 
-	                }
-	            } catch (SQLException e) {
-	                e.printStackTrace();
-	            }
-	        } catch (ClassNotFoundException e) {
-	            e.printStackTrace();
-	        }
-
-	        return results;
-   }
-    public boolean editOrderDetails(long orderID, long productID, int quantity,float discount) {
-
-           try {
+        try {
             Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
 
             try (
-            	Connection conn = DriverManager.getConnection(Consts.CONN_STR);
-                CallableStatement stmt = conn.prepareCall(Consts.SQL_UPD_ORDER_DETAILS))
-            {
-            	
+                    Connection conn = DriverManager.getConnection(Consts.CONN_STR);
+                    CallableStatement stmt = conn.prepareCall(Consts.SQL_UPD_ORDER_DETAILS)) {
+
                 int i = 1;
 
-                 stmt.setInt(i++, quantity);
-                 
-                 stmt.setFloat(i++, discount);// can't be null
-                 
+                stmt.setInt(i++, quantity);
+
+                stmt.setFloat(i++, discount);// can't be null
 
                 stmt.setLong(i++, orderID); // can't be null
-                
+
                 stmt.setLong(i++, productID); // can't be null
-               
 
                 stmt.executeUpdate();
-                
 
                 return true;
             } catch (SQLException e) {
@@ -447,47 +443,45 @@ public class OrderLogic {
         }
         return false;
     }
-    public boolean addOrderDetails(long orderID, long productID, int quantity,float discount) {
+
+    public boolean addOrderDetails(long orderID, long productID, int quantity, float discount) {
 
         try {
-         Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
+            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
 
-         try (
-         	Connection conn = DriverManager.getConnection(Consts.CONN_STR);
-             CallableStatement stmt = conn.prepareCall(Consts.SQL_INS_ORDER_DETAILS))
-         {
-         	
-             int i = 1;
+            try (
+                    Connection conn = DriverManager.getConnection(Consts.CONN_STR);
+                    CallableStatement stmt = conn.prepareCall(Consts.SQL_INS_ORDER_DETAILS)) {
 
-             stmt.setLong(i++, orderID); // can't be null             
-             stmt.setLong(i++, productID); // can't be null            
-             stmt.setInt(i++, quantity);            
-             stmt.setFloat(i++, discount);// can't be null
-             stmt.executeUpdate();
-             
+                int i = 1;
 
-             return true;
-         } catch (SQLException e) {
-             e.printStackTrace();
-         }
-     } catch (ClassNotFoundException e) {
-         e.printStackTrace();
-     }
-     return false;
- }
-    public boolean removeOrderDetail(long orderID,long productID) {
+                stmt.setLong(i++, orderID); // can't be null
+                stmt.setLong(i++, productID); // can't be null
+                stmt.setInt(i++, quantity);
+                stmt.setFloat(i++, discount);// can't be null
+                stmt.executeUpdate();
+
+                return true;
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean removeOrderDetail(long orderID, long productID) {
         try {
             Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
 
             try (Connection conn = DriverManager.getConnection(Consts.CONN_STR);
-            		CallableStatement stmt1 = conn.prepareCall(Consts.SQL_DEL_ORDER_DETAILS_PRODUCT);
+                    CallableStatement stmt1 = conn.prepareCall(Consts.SQL_DEL_ORDER_DETAILS_PRODUCT);
 
-            		) {
+            ) {
                 stmt1.setLong(1, orderID);
                 stmt1.setLong(2, productID);
                 stmt1.executeUpdate();
-
-
 
             } catch (SQLException e) {
                 e.printStackTrace();
