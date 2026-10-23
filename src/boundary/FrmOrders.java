@@ -35,6 +35,7 @@ import entity.Employee;
 import entity.Order;
 import entity.Shipper;
 import entity.Customer;
+import control.CustomerLogic;
 import control.EmployeeLogic;
 import control.OrderLogic;
 import util.JTextFieldLimiter;
@@ -437,7 +438,7 @@ public class FrmOrders extends RootLayout {
 	private void initSelectCusomers()
 	{
 
-		customers= OrderLogic.getInstance().getCustomers();
+		customers= CustomerLogic.getInstance().getCustomers();
 		Vector model = new Vector();
 
 		int i=0;

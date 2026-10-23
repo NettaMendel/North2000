@@ -6,6 +6,7 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.plaf.basic.*;
 
+import control.CustomerLogic;
 import control.OrderLogic;
 import entity.Customer;
  
@@ -14,7 +15,7 @@ public class ComboBoxItem extends JFrame implements ActionListener
     public ComboBoxItem()
     {
     	ArrayList<Customer> customers = new ArrayList<Customer>();
-		customers= OrderLogic.getInstance().getCustomers();
+		customers= CustomerLogic.getInstance().getCustomers();
 		Vector model = new Vector();
 		int i=1;
 		 
