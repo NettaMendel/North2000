@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.JFrame;
-import entity.Consts;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -17,6 +16,19 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.swing.JRViewer;
 import net.sf.jasperreports.view.JasperViewer;
+import java.math.BigDecimal;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.logging.Level;
+
+import control.*;
+import entity.* ;
 
 /**
  * Customer Orders Report controller.
@@ -69,39 +81,10 @@ public class OrderLogic {
                 frame.pack();
                 return frame;
             } catch (SQLException | JRException | IOException e) {
-import java.math.BigDecimal;
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.logging.Level;
+            	e.printStackTrace();
+            }
+        }
 
-import entity.Consts;
-import entity.Order ;
-import entity.OrderDetails ;
-import entity.Product;
-
-import entity.Shipper;
-import entity.Customer;
-import entity.Employee;
-
-
-
-
-public class OrderLogic {
-	private static OrderLogic _instance;
-
-    private OrderLogic() { }
-
-    public static OrderLogic getInstance() {
-        if (_instance == null)
-            _instance = new OrderLogic();
-        return _instance;
-    }
 
   //////////////////////////////////////////////////////////////////
   //READ ORDERS FROM DB
@@ -252,7 +235,7 @@ public class OrderLogic {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        return null;
+        return false;
     }
 
 	
@@ -296,9 +279,7 @@ public class OrderLogic {
         
         return null;
     }
-        return false;
 
-    }
     public boolean removeOrder(long orderID) {
         try {
             Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
