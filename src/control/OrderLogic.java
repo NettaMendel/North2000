@@ -161,6 +161,11 @@ public class OrderLogic {
 
   	        return results;
      }
+    
+    public Product getProduct(long productID) {
+    	
+    	
+    }
 
 
     public ArrayList <Order> getOrders() {
@@ -188,6 +193,10 @@ public class OrderLogic {
 
 	        return results;
    }
+    
+    public Order getOrder(long OrderID) {
+    	
+    }
     public boolean addOrder(String customerID, long employeeID,Date orderDate,Date requiredDate,
     		Date shippedDate,int shipVia,String shipAddress,String shipCity,String shipCountry) {
         try {
