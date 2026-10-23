@@ -217,8 +217,8 @@ private void initTableData(){
 	int i=0;
  	while (i<orders.size()){
     Vector<Object> data = new Vector<Object>();
-    data.add(orders.get(i).getProductID());
-    data.add(orders.get(i).getProductName());
+    data.add(orders.get(i).getProduct().getProductID());
+    data.add(orders.get(i).getProduct().getProductName());
     data.add(orders.get(i).getUnitPrice());
     data.add(orders.get(i).getQuantity());
     	//Add percent format for cell
@@ -499,7 +499,7 @@ public void setUpTextEditor(JTable table,int colIndex,JTextField cell) {
 	    			rowIndex =0 ;
 					while (rowIndex<table.getRowCount()) {
 							if (table.getValueAt(rowIndex,0).toString().length() <=0) break;
-							int orderDetailArrayIndex= orders.indexOf(new OrderDetails(orderID,Long.parseLong(table.getValueAt(rowIndex,0).toString())));
+							int orderDetailArrayIndex= orders.indexOf(new OrderDetails(OrderLogic.getInstance().getOrder(orderID),ProductLogic.getInstance().getProduct(Long.parseLong(table.getValueAt(rowIndex,0).toString()))));
 							if (orderDetailArrayIndex>-1){//update
 
 								String pecentFormated = table.getValueAt(rowIndex,4).toString();
@@ -532,7 +532,7 @@ public void setUpTextEditor(JTable table,int colIndex,JTextField cell) {
 
 
 								if (table.getValueAt(rowIndex,0).toString().length()>0){
-								if(Long.parseLong(table.getValueAt(rowIndex,0).toString()) == orders.get(ArrayIndex).getProductID())
+								if(Long.parseLong(table.getValueAt(rowIndex,0).toString()) == orders.get(ArrayIndex).getProduct().getProductID())
 								{
 									found = true;
 									break;
@@ -541,7 +541,7 @@ public void setUpTextEditor(JTable table,int colIndex,JTextField cell) {
 							}
 
 							if (found == false){
-								success=OrderLogic.getInstance().removeOrderDetail(orderID,orders.get(ArrayIndex).getProductID());
+								success=OrderLogic.getInstance().removeOrderDetail(orderID,orders.get(ArrayIndex).getProduct().getProductID());
 
 							}
 
