@@ -1,0 +1,159 @@
+<!-- Created with Jaspersoft Studio version 7.0.1.final using JasperReports Library version 7.0.1-573496633c2b4074e32f433154b543003f7d2498  -->
+<jasperReport name="RptCustomerOrders" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a150728b-c182-43cf-a1dc-929509275279">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter"/>
+	<query language="SQL"><![CDATA[SELECT TblOrders.OrderID, TblOrders.CustomerID, TblCustomers.CompanyName, Year([OrderDate]) AS OrderYear, TblOrders.OrderDate, TblOrders.ShipVia, TblOrders.ShipAddress, TblOrders.ShipCity, TblOrders.ShipCountry, Sum([Quantity]*[UnitPrice]*(1-[Discount])) AS OrderPrice
+FROM (TblProducts INNER JOIN (TblOrders INNER JOIN TblOrderDetails ON TblOrders.OrderID = TblOrderDetails.OrderID) ON TblProducts.ProductID = TblOrderDetails.ProductID) INNER JOIN TblCustomers ON TblOrders.CustomerID = TblCustomers.CustomerID
+GROUP BY TblOrders.OrderID, TblOrders.CustomerID, TblCustomers.CompanyName, Year([OrderDate]), TblOrders.OrderDate, TblOrders.ShipVia, TblOrders.ShipAddress, TblOrders.ShipCity, TblOrders.ShipCountry
+ORDER BY TblCustomers.CompanyName, Year([OrderDate]);]]></query>
+	<field name="ORDERID" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="ORDERID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="SYSTEM_SUBQUERY"/>
+	</field>
+	<field name="CustomerID" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CustomerID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="SYSTEM_SUBQUERY"/>
+	</field>
+	<field name="CompanyName" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CompanyName"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="TblCustomers"/>
+	</field>
+	<field name="OrderYear" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="OrderYear"/>
+	</field>
+	<field name="OrderDate" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.label" value="OrderDate"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="SYSTEM_SUBQUERY"/>
+	</field>
+	<field name="ShipVia" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="ShipVia"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="SYSTEM_SUBQUERY"/>
+	</field>
+	<field name="ShipAddress" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="ShipAddress"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="SYSTEM_SUBQUERY"/>
+	</field>
+	<field name="ShipCity" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="ShipCity"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="SYSTEM_SUBQUERY"/>
+	</field>
+	<field name="ShipCountry" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="ShipCountry"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="SYSTEM_SUBQUERY"/>
+	</field>
+	<field name="OrderPrice" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="OrderPrice"/>
+	</field>
+	<variable name="OrderPrice1" resetType="Group" calculation="Sum" resetGroup="OrderYear" class="java.lang.Double">
+		<expression><![CDATA[$F{OrderPrice}]]></expression>
+	</variable>
+	<variable name="OrderPrice2" resetType="Group" calculation="Sum" resetGroup="CompanyName" class="java.lang.Double">
+		<expression><![CDATA[$F{OrderPrice}]]></expression>
+	</variable>
+	<group name="CompanyName" keepTogether="true">
+		<expression><![CDATA[$F{CompanyName}]]></expression>
+		<groupHeader>
+			<band height="33">
+				<element kind="rectangle" uuid="f5fd07af-dbe6-43e2-b13c-6284d8002223" x="0" y="9" width="555" height="24"/>
+				<element kind="staticText" uuid="1c5c8ce1-7b6e-429c-96cb-18e1c08bcfb9" x="10" y="9" width="130" height="20" forecolor="#0015FF" fontSize="14.0" bold="true">
+					<text><![CDATA[Orders made by:]]></text>
+				</element>
+				<element kind="textField" uuid="f56e9b6e-e973-40b1-8a98-dd663565f82b" x="140" y="9" width="415" height="20" fontSize="14.0">
+					<expression><![CDATA[$F{CompanyName}]]></expression>
+				</element>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="26">
+				<element kind="rectangle" uuid="75cde6dd-e386-4b14-991d-5a8674c03b56" x="0" y="0" width="555" height="26"/>
+				<element kind="staticText" uuid="8d0505a3-46ad-475b-9923-2f13061d8064" x="10" y="0" width="380" height="20" fontSize="14.0" bold="true">
+					<text><![CDATA[Total order price (company section):]]></text>
+				</element>
+				<element kind="textField" uuid="7eff0707-b0d6-4b1c-a89a-de3c81336255" x="390" y="0" width="100" height="20" pattern="#,##0.##¤;(#,##0.##) ¤" vTextAlign="Middle">
+					<expression><![CDATA[$V{OrderPrice2}]]></expression>
+				</element>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="OrderYear" keepTogether="true">
+		<expression><![CDATA[$F{OrderYear}]]></expression>
+		<groupHeader>
+			<band height="42">
+				<element kind="rectangle" uuid="ad0d496c-4c78-4b9d-9d91-1aa687131ea0" x="40" y="20" width="515" height="21"/>
+				<element kind="rectangle" uuid="65d84161-4516-4e4e-a5cc-bb7e3be0ca1b" x="20" y="0" width="535" height="20"/>
+				<element kind="staticText" uuid="40d8cbbf-e23c-4edc-b115-828e107138e6" x="220" y="20" width="160" height="22" forecolor="#000000" fontSize="14.0" bold="true">
+					<text><![CDATA[Ship Address]]></text>
+				</element>
+				<element kind="staticText" uuid="7c272e4b-71d7-4d46-8715-b1126e234ebe" x="380" y="20" width="100" height="22" forecolor="#000000" fontSize="14.0" bold="true">
+					<text><![CDATA[Ship Country]]></text>
+				</element>
+				<element kind="staticText" uuid="f35fd698-8a5a-497e-a9e8-2ebc336cd264" x="480" y="20" width="76" height="22" forecolor="#000000" fontSize="14.0" bold="true">
+					<text><![CDATA[Price]]></text>
+				</element>
+				<element kind="staticText" uuid="4aa7d673-2955-42d4-abc6-74c7ffc7229a" x="40" y="0" width="130" height="20" forecolor="#0015FF" fontSize="14.0" bold="true">
+					<text><![CDATA[Orders made in:]]></text>
+				</element>
+				<element kind="textField" uuid="7b2453c6-7afa-4025-9c1d-633d864d29ea" x="170" y="0" width="385" height="20" fontSize="14.0">
+					<expression><![CDATA[$F{OrderYear}]]></expression>
+				</element>
+				<element kind="staticText" uuid="79db458d-6d11-4318-989e-721adead466a" x="60" y="20" width="80" height="22" forecolor="#000000" fontSize="14.0" bold="true">
+					<text><![CDATA[Date]]></text>
+				</element>
+				<element kind="staticText" uuid="d48e618d-4e54-4288-ad0f-5e8036ec5b55" x="140" y="20" width="80" height="22" forecolor="#000000" fontSize="14.0" bold="true">
+					<text><![CDATA[ID]]></text>
+				</element>
+				<element kind="line" uuid="18674add-38d8-44f2-ab94-a10d9bc1bbf6" x="0" y="0" width="1" height="41"/>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="26">
+				<element kind="rectangle" uuid="39611cb7-6485-4e16-a997-26e3f90eaf00" x="40" y="0" width="515" height="20"/>
+				<element kind="staticText" uuid="799e84e9-866d-4bcb-8100-6f6cf256d14c" x="60" y="0" width="350" height="20" fontSize="14.0" bold="true">
+					<text><![CDATA[Total order price (company and year section):]]></text>
+				</element>
+				<element kind="textField" uuid="a46a1053-a7af-4722-bd7b-68157296df31" x="390" y="0" width="155" height="20" pattern="#,##0.00¤;(#,##0.00) ¤" vTextAlign="Middle">
+					<expression><![CDATA[$V{OrderPrice1}]]></expression>
+				</element>
+				<element kind="line" uuid="874afd39-7f52-4384-b279-c8c55b0ad9fa" x="0" y="0" width="1" height="26"/>
+				<element kind="line" uuid="86d78c0f-54fd-4541-9ae1-8f8d5e0a1a47" x="555" y="20" width="1" height="6"/>
+			</band>
+		</groupFooter>
+	</group>
+	<background splitType="Stretch"/>
+	<title height="79" splitType="Stretch">
+		<element kind="staticText" uuid="b2cea666-4e6c-4afc-837b-eb8dbd4f212b" x="0" y="0" width="555" height="79" fontSize="26.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[Customer Order Report]]></text>
+			<property name="com.jaspersoft.studio.unit.width" value="px"/>
+		</element>
+		<element kind="textField" uuid="b3c54f01-4d40-4bf0-9cca-79d7eb6d5f3e" x="445" y="9" width="100" height="30" pattern="MMMMM dd, yyyy">
+			<expression><![CDATA[new java.util.Date()]]></expression>
+		</element>
+	</title>
+	<detail>
+		<band height="33" splitType="Stretch">
+			<element kind="line" uuid="d4de4ed6-78c4-4fad-a098-9934778cbe4d" x="0" y="0" width="1" height="32"/>
+			<element kind="textField" uuid="749fe440-0f48-44f7-bc9e-da98b2da4f2e" x="140" y="-1" width="80" height="33" vTextAlign="Middle">
+				<expression><![CDATA[$F{ORDERID}]]></expression>
+			</element>
+			<element kind="line" uuid="704269f3-f2bc-464c-8876-01dc57d96f04" x="555" y="-1" width="1" height="34"/>
+			<element kind="textField" uuid="73e4e5d0-9a71-48b8-bad2-a9edcf78596e" x="60" y="0" width="80" height="32" vTextAlign="Middle">
+				<expression><![CDATA[$F{OrderDate}]]></expression>
+			</element>
+			<element kind="textField" uuid="8e6e7acb-403b-40bd-9203-c1734a996660" x="220" y="-1" width="160" height="34" vTextAlign="Middle">
+				<expression><![CDATA[CONCATENATE($F{ShipAddress},", ", $F{ShipCity})]]></expression>
+			</element>
+			<element kind="textField" uuid="e54f4fee-3e25-416c-8d11-206f572a1fba" x="380" y="-1" width="100" height="34" vTextAlign="Middle">
+				<expression><![CDATA[$F{ShipCountry}]]></expression>
+			</element>
+			<element kind="textField" uuid="5a16dade-9159-44ee-84f0-654714ceaf73" x="480" y="0" width="75" height="32" pattern="#,##0.00¤;(#,##0.00) ¤" vTextAlign="Middle">
+				<expression><![CDATA[$F{OrderPrice}]]></expression>
+			</element>
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+		</band>
+	</detail>
+	<pageFooter height="51" splitType="Stretch">
+		<element kind="textField" uuid="49c5c46b-3c8a-45ae-a2cc-84665dfaf8af" x="230" y="10" width="100" height="30" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<expression><![CDATA[$V{PAGE_NUMBER}]]></expression>
+		</element>
+	</pageFooter>
+</jasperReport>
