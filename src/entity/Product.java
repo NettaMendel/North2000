@@ -127,4 +127,9 @@ public class Product {
             return false;
         return (this.productID == ((Product) obj).productID);
     }
+
+    @Override
+    public String toString() {
+        return productName != null ? productName : String.valueOf(productID);
+    }
 }
