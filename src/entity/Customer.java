@@ -23,6 +23,16 @@ public class Customer {
 		this.phone = phone;
 		this.fax = fax;
 	}
+	
+	public Customer(String customerID, String companyName) {
+		if (customerID == null || customerID.isEmpty())
+			throw new IllegalArgumentException("customerID is required!");
+		this.CUSTOMER_ID = customerID;
+		if (companyName == null || companyName.isEmpty())
+			throw new IllegalArgumentException("companyName is required!");
+		this.companyName = companyName;
+		
+	}
 
 	/**
 	 * @return the companyName
