@@ -17,7 +17,7 @@ ORDER BY TblOrders.ShipCountry;]]>
 	<field name="ShipCountry" class="java.lang.String">
 		<property name="net.sf.jasperreports.sql.field.column.name" value="ShipCountry"/>
 	</field>
-	<field name="NumOfOrders" class="java.lang.Number">
+	<field name="NumOfOrders" class="java.lang.Integer">
 		<property name="net.sf.jasperreports.sql.field.column.name" value="NumOfOrders"/>
 	</field>
 	<background>
