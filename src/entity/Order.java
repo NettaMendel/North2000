@@ -43,6 +43,13 @@ public class Order {
 		this.shipCountry = shipCountry;
 	}
 
+	public Order(long orderID, String customerID, long employeeID, Date orderDate, Date requiredDate, Date shippedDate,
+			int shipVia, String shipAddress, String shipCity, String shipCountry) {
+		this(orderID, customerID != null ? new Customer(customerID) : null,
+				new Employee(employeeID), orderDate, requiredDate, shippedDate,
+				new Shipper(shipVia), shipAddress, shipCity, shipCountry);
+	}
+
 
 	public Order(long orderID) {
 		super();
@@ -89,11 +96,23 @@ public class Order {
 	public void setcustomer(Customer customer) {
 		this.customer = customer;
 	}
+	public String getCustomerID() {
+		return customer != null ? customer.getCustomerID() : null;
+	}
+	public void setCustomerID(String customerID) {
+		this.customer = customerID != null ? new Customer(customerID) : null;
+	}
 	public Employee getemployee() {
 		return employee;
 	}
 	public void setemployee(Employee employee) {
 		this.employee = employee;
+	}
+	public Long getEmployeeID() {
+		return employee != null ? employee.getEmployeeID() : null;
+	}
+	public void setEmployeeID(long employeeID) {
+		this.employee = new Employee(employeeID);
 	}
 	public Date getOrderDate() {
 		return orderDate;

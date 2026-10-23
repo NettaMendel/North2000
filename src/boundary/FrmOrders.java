@@ -535,7 +535,7 @@ public class FrmOrders extends RootLayout {
 	        dtcShippedDate.setDate((order != null) ? order.getShippedDate() : null);
 
 
-	        tfShipViaID.setText((order != null) ? Long.toString(order.getShipVia()) : null);
+	        tfShipViaID.setText((order != null && order.getShipVia() != null) ? Long.toString(order.getShipVia().getShipperID()) : null);
 	        tfShipAddress.setText((order != null) ? order.getShipAddress() : null);
 	        tfShipCity.setText((order != null) ? order.getShipCity() : null);
 	        tfCountry.setText((order != null) ? order.getShipCountry() : null);

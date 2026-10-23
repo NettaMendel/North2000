@@ -363,12 +363,22 @@ public class OrderLogic {
 
                 stmt.setLong(1, orderID);
                 ResultSet rs = stmt.executeQuery();
+                Order order = getOrder(orderID);
                 while (rs.next()) {
                     int i = 1;
-                    results.add(new OrderDetails(getOrder(rs.getLong(i++)), ProductLogic.getInstance().getProduct(rs.getLong(i++)),
-                            rs.getString(i++), rs.getInt(i++), rs.getFloat(i++),
-                            rs.getBigDecimal(i++), rs.getBigDecimal(i++)));
-
+                    long oId = rs.getLong(i++);
+                    Order curOrder = (order != null && order.getOrderID() == oId) ? order : getOrder(oId);
+                    long pId = rs.getLong(i++);
+                    Product product = ProductLogic.getInstance().getProduct(pId);
+                    String prodName = rs.getString(i++);
+                    int qty = rs.getInt(i++);
+                    float discount = rs.getFloat(i++);
+                    BigDecimal unitPrice = rs.getBigDecimal(i++);
+                    BigDecimal linePrice = rs.getBigDecimal(i++);
+                    if (linePrice == null && unitPrice != null) {
+                        linePrice = BigDecimal.valueOf(unitPrice.doubleValue() * qty * (1.0 - discount));
+                    }
+                    results.add(new OrderDetails(curOrder, product, prodName, qty, discount, unitPrice, linePrice));
                 }
             } catch (SQLException e) {
                 e.printStackTrace();

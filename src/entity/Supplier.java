@@ -27,6 +27,14 @@ public class Supplier {
 		this.fax = fax;
 		HomePage = homePage;
 	}
+
+	public Supplier(long supplierID) {
+		this(supplierID, "", null, null, null, null, null, null, null, null);
+	}
+
+	public Supplier(long supplierID, String companyName) {
+		this(supplierID, companyName, null, null, null, null, null, null, null, null);
+	}
 	/**
 	 * @return the contactName
 	 */

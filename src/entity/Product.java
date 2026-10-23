@@ -1,9 +1,6 @@
 package entity;
 
 import java.math.BigDecimal;
-import java.util.Locale.Category;
-
-import entity.*;
 
 public class Product {
     private  long productID;
@@ -25,6 +22,15 @@ public class Product {
         this.unitPrice = unitPrice.setScale(2);
         this.unitsInStock = unitsInStock;
 
+    }
+
+    public Product(long productID, String productName, Long supplierID,
+            Long categoryID, BigDecimal unitPrice,
+            Integer unitsInStock) {
+        this(productID, productName,
+                supplierID != null ? new Supplier(supplierID) : null,
+                categoryID != null ? new entity.Category(categoryID) : null,
+                unitPrice, unitsInStock);
     }
     public Product(long productID) {
         this.productID = productID;
@@ -73,12 +79,20 @@ public class Product {
         return supplier;
     }
 
+    public Long getSupplierID() {
+        return supplier != null ? supplier.getSupplierID() : null;
+    }
+
     /**
      * get product's category ID.
      * @return product's category ID.
      */
     public entity.Category getCategory() {
         return category;
+    }
+
+    public Long getCategoryID() {
+        return category != null ? category.getCategoryID() : null;
     }
 
     /**

@@ -17,6 +17,10 @@ public class Category {
 		CategoryName = categoryName;
 		Description = description;
 	}
+
+	public Category(long categoryID) {
+		this(categoryID, "", null);
+	}
 	/**
 	 * @return the categoryName
 	 */
