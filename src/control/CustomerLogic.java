@@ -12,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Iterator;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -320,4 +321,26 @@ public class CustomerLogic {
 		if (m.equals(Manipulation.UPDATE))
 			stmt.setString(i, c.getCustomerID());
 	}
+	
+    public ArrayList<Customer> getCustomers() {
+        ArrayList<Customer> results = new ArrayList<Customer>();
+
+        try {
+            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
+            try (Connection conn = DriverManager.getConnection(Consts.CONN_STR);
+                    PreparedStatement stmt = conn.prepareStatement(Consts.SQL_SEL_CUSTOMERS);
+                    ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    int i = 1;
+                    results.add(new Customer(rs.getString(i++), rs.getString(i++)));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return results;
+    }
 }

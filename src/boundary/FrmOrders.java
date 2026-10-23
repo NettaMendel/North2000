@@ -35,6 +35,7 @@ import entity.Employee;
 import entity.Order;
 import entity.Shipper;
 import entity.Customer;
+import control.CustomerLogic;
 import control.EmployeeLogic;
 import control.OrderLogic;
 import util.JTextFieldLimiter;
@@ -428,7 +429,7 @@ public class FrmOrders extends RootLayout {
 
 	private void initSelectCusomers()
 	{
-		customers = OrderLogic.getInstance().getCustomers();
+		customers = CustomerLogic.getInstance().getCustomers();
 		Vector<Customer> model = new Vector<>(customers);
         cbCustomerName = new JComboBox( model );
         cbCustomerName.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);

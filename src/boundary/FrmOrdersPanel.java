@@ -29,6 +29,7 @@ import javax.swing.table.DefaultTableModel;
 
 import com.toedter.calendar.JDateChooser;
 
+import control.CustomerLogic;
 import control.EmployeeLogic;
 import control.OrderLogic;
 import entity.Customer;
@@ -408,7 +409,7 @@ public class FrmOrdersPanel extends JPanel {
 
 	private void initSelectCusomers()
 	{
-		customers = OrderLogic.getInstance().getCustomers();
+		customers = CustomerLogic.getInstance().getCustomers();
 		Vector<Customer> model = new Vector<>(customers);
         cbCustomerName = new JComboBox( model );
         cbCustomerName.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
