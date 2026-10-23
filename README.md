@@ -1,133 +1,134 @@
-# 🏢 מערכת North2000 - Enterprise Management System
+# 🏢 North2000 - Enterprise Management System
 
-מערכת שולחנית מבוססת **Java Swing** לניהול מלא של חברת הייבוא והשיווק **NorthWind** (מוצרי מזון, לקוחות, עובדים, ספקים, הזמנות ודוחות ניהוליים).  
-המערכת בנויה על פי ארכיטקטורת **ECB** (*Entity-Control-Boundary* / *MVC*), תוך שימוש במסד נתונים **Microsoft Access** דרך דרייבר **UCanAccess**, מנוע הדוחות **JasperReports**, ומודול ייבוא/ייצוא נתונים בפורמטים **XML** ו-**JSON**.
+A desktop enterprise application built with **Java Swing** for managing the operations of **NorthWind** — an import and export company dealing with specialty food products, customers, employees, suppliers, orders, inventory, and managerial reporting.
+
+The system is engineered following the **ECB (Entity-Control-Boundary)** / **MVC** architectural pattern, utilizing **Microsoft Access** via the **UCanAccess** pure Java JDBC driver, **JasperReports** for data visualizations and reports, and data interchange via **XML** and **JSON**.
 
 ---
 
-## 📐 ארכיטקטורת המערכת (ECB Pattern)
+## 📐 System Architecture (ECB Pattern)
 
-המערכת מחולקת בצורה מודולרית ל-4 שכבות עיקריות בתיקיית `src/`:
+The project follows a clean separation of concerns located inside `src/`:
 
 ```
 src/
-├── boundary/    # 🖥️ ממשק משתמש (Swing), תפריטים, חלונות, ודוחות Jasper
-├── control/     # ⚙️ לוגיקה עסקית, שאילתות SQL וחיבור למסד הנתונים (Singletons)
-├── entity/      # 📦 ישויות הנתונים של עולם התוכן (Domain Objects) וקובץ ה-DB
-└── util/        # 🛠️ כלי עזר ורכיבי תשתית ל-UI
+├── boundary/    # 🖥️ Presentation layer: Swing GUI frames, dialogs, custom components & JasperReports
+├── control/     # ⚙️ Business logic, SQL queries, and database controllers (Singletons)
+├── entity/      # 📦 Domain entities (OOP object models) and Access database file
+└── util/        # 🛠️ Utility classes and GUI helper components
 ```
 
 ---
 
-## 📂 מיפוי מפורט של כלל הקבצים במערכת
+## 📂 Detailed File Structure & Directory Map
 
-### 1. שכבת הממשק – `src/boundary/`
-שכבה זו אחראית על כל התצוגה, החלונות, הטפסים, האינטראקציה מול המשתמש והפקת הדוחות:
+### 1. Presentation Layer – `src/boundary/`
+Handles graphical rendering, user interactions, input validation, window navigation, and report generation:
 
-| קובץ | תיאור ותפקיד במערכת |
+| File | Description & Role |
 | :--- | :--- |
-| **`North2000.java`** | **נקודת הכניסה הראשית (Main Entry Point)** למערכת כולה. מאתחל את ה-Event Dispatch Thread (EDT) ומציג את התפריט הראשי (`MainMenu`). |
-| **`MainMenu.java`** | **מסך הבית הראשי** של המערכת. כולל כפתורי גישה מהירה למסכי ניהול עובדים, הזמנות, תפריט דוחות ופאנל פעולות גיבוי/העברת מידע (XML/JSON). |
-| **`RootLayout.java`** | **מחלקת בסיס (Base Window)** לכל חלונות האפליקציה. מגדירה שורת תפריטים גלובלית עליונה (`JMenuBar`) הכוללת ניווט ישיר בין כל מסכי המערכת, יציאה מסודרת, פתיחת דוחות ופעולות קבצים. |
-| **`FrmOrders.java`** | **טופס ניהול הזמנות ראשי** (`JFrame`). מאפשר דפדוף בין הזמנות (`Next`, `Prev`, `First`, `Last`), הוספת הזמנה חדשה, עריכה, שיוך לקוח, שיוך עובד מטפל, חברת שילוח, כתובת משלוח וניהול סטטוסים. |
-| **`FrmOrdersPanel.java`** | **רכיב פאנל ניהול הזמנות** (`JPanel`) המאפשר הטמעה גמישה של טופס ההזמנות בתוך מכלים וחלונות שונים. |
-| **`FrmOrderDetailsInternal.java`** | **טבלה פנימית של פרטי הזמנה** (`Order Details`). מוטמעת בתוך טופס ההזמנות ומאפשרת הוספת מוצרים, בחירת מוצר מתוך ComboBox, עדכון כמויות, אחוזי הנחה, וחישוב אוטומטי של מחיר שורה וסה"כ הזמנה. |
-| **`FrmEmployees.java`** | **טופס ניהול עובדים**. כולל דפדוף בין עובדי החברה, חיפוש מהיר, הצגת פרטים אישיים, תפקידים, פרטי התקשרות, הוספה, עדכון ומחיקת עובדים. |
-| **`FrmReportMenu.java`** | **תפריט הפקת דוחות ניהוליים**. מאפשר בחירת פרמטרים (כגון בחירת מוצר מתוך רשימת המוצרים) והפעלת מנוע הדוחות של JasperReports. |
-| **`RptCustomerOrders.jrxml / .jasper`** | קובץ המקור ותוצר הקומפילציה של **דוח הזמנות לפי לקוח** (כולל קיבוצים, סיכומי כמויות ועלויות). |
-| **`RptProductOrdersByCountry.jrxml / .jasper`** | קובץ המקור ותוצר הקומפילציה של **דוח גרפי של הזמנות מוצר לפי מדינות יעד**. |
-| **`images/`** | תיקיית משאבים גרפיים: אייקונים, לוגו המערכת ותמונות רקע עבור כפתורי הממשק. |
+| **`North2000.java`** | **Application Main Entry Point**. Initializes the Swing Event Dispatch Thread (EDT) and launches `MainMenu`. |
+| **`MainMenu.java`** | **Home Dashboard**. Provides intuitive quick-action buttons to access employee management, order processing, reporting, and XML/JSON data transfer modules. |
+| **`RootLayout.java`** | **Base Application Window (`JFrame`)**. Defines the universal top menu bar (`JMenuBar`) for consistent system-wide navigation (`Orders`, `Employees`, `Reports`, `XML/JSON`, `Exit`). |
+| **`FrmOrders.java`** | **Order Management Form (`JFrame`)**. Full-featured order browser and editor with navigation (`First`, `Previous`, `Next`, `Last`, `Search`), new order creation, order removal, and customer/employee/shipper linking. |
+| **`FrmOrdersPanel.java`** | **Order Management Panel (`JPanel`)**. Modular order management component for flexible embedding across containers. |
+| **`FrmOrderDetailsInternal.java`** | **Order Line Items Sub-Form**. Embedded directly inside the order form; manages individual product line items, quantity, discounts, live price calculations, and line deletion/saving. |
+| **`FrmEmployees.java`** | **Employee Management Form**. Displays employee profiles, contact information, photos, titles, and dates, with complete CRUD operations. |
+| **`FrmReportMenu.java`** | **Managerial Reports Dialog**. Parameter selection interface (e.g., product selection) for triggering dynamic JasperReports. |
+| **`RptCustomerOrders.jrxml / .jasper`** | Source template and compiled binary for the **Customer Orders Report**, featuring order groupings and aggregate totals. |
+| **`RptProductOrdersByCountry.jrxml / .jasper`** | Source template and compiled binary for the **Product Orders by Destination Country** visual chart report. |
+| **`images/`** | UI asset directory containing application logos, icons, and button artwork. |
 
 ---
 
-### 2. שכבת הלוגיקה והנתונים – `src/control/`
-שכבה זו מממשת את כל הלוגיקה העסקית, ביצוע שאילתות SQL, פרוצדורות שמורות (Stored Procedures), מניפולציות וגישה למסד הנתונים. כל המחלקות ממומשות בתבנית **Singleton**:
+### 2. Business Logic & Controller Layer – `src/control/`
+Implements business rules, transaction logic, database operations, and data exchange. All controllers follow the **Singleton pattern**:
 
-| קובץ | תיאור ותפקיד במערכת |
+| File | Description & Role |
 | :--- | :--- |
-| **`Consts.java`** | **ריכוז קבועי המערכת**. מחזיק את מחרוזת החיבור ל-DB (`CONN_STR`) באמצעות UCanAccess, שאילתות בחירה (SELECT), קריאות לפרוצדורות שמורות (`qryIns...`, `qryUpd...`, `qryDel...`), ומסלולי קבצים. |
-| **`OrderLogic.java`** | **ניהול לוגיקת הזמנות ודוחות**. כולל שליפת הזמנות, שליפת פרטי הזמנה לפי מזהה, הוספה/עדכון/מחיקת הזמנות ופריטיהן, חישוב סה"כ לתשלום, והרצת דוחות JasperReports בזמן ריצה. |
-| **`CustomerLogic.java`** | **ניהול לוגיקת לקוחות והעברת נתונים**. אחראי על פעולות CRUD על לקוחות במסד הנתונים, ייצוא וייבוא מלא של לקוחות לקובצי **XML** (באמצעות DOM Parser) ולקובצי **JSON** (באמצעות JSON-Simple). |
-| **`EmployeeLogic.java`** | **ניהול לוגיקת עובדים**. אחראי על שליפת עובדים, הוספה, עריכה ומחיקת עובדים מול מסד הנתונים. |
-| **`ProductLogic.java`** | **ניהול לוגיקת מוצרים**. שליפת כלל המוצרים, שליפת מוצר בודד לפי מזהה (`getProduct(id)`), וסינון מוצרים לפעילות המערכת. |
+| **`Consts.java`** | **System Constants & Configuration**. Contains database connection strings (`CONN_STR`), SELECT queries, and Stored Procedure / CallableStatement definitions (`qryIns...`, `qryUpd...`, `qryDel...`). |
+| **`OrderLogic.java`** | **Order Business Controller**. Handles order fetching, line item retrieval, total price calculations, order manipulation, and runtime compilation/display of JasperReports. |
+| **`CustomerLogic.java`** | **Customer Controller & Data Transfer**. Manages customer CRUD operations and bidirectional data transfer: XML import/export (via W3C DOM) and JSON import/export (via JSON-Simple). |
+| **`EmployeeLogic.java`** | **Employee Business Controller**. Manages employee persistence, updates, and lookups. |
+| **`ProductLogic.java`** | **Product Business Controller**. Retrieves product catalogs and product lookups by ID (`getProduct(id)`). |
 
 ---
 
-### 3. שכבת הישויות – `src/entity/`
-מחלקות מונחות-עצמים המייצגות את הטבלאות והישויות של הארגון, כולל קשרים מלאים ביניהן (OOP Associations):
+### 3. Domain Entity Layer – `src/entity/`
+Pure Object-Oriented representations of organizational business entities with full object associations:
 
-| קובץ | תיאור הישות |
+| File | Description |
 | :--- | :--- |
-| **`Order.java`** | מייצג **הזמנה**. מכיל קשרים ישירים לאובייקטי `Customer` (לקוח), `Employee` (עובד מטפל), `Shipper` (חברת שילוח), וכן תאריכי הזמנה, יעד, שילוח וכתובת מלאה. |
-| **`OrderDetails.java`** | מייצג **שורת פריט בהזמנה**. מכיל הפניה ל-`Order`, ל-`Product`, כמות (`quantity`), הנחה (`discount`), מחיר יחידה ומחיר שורה כולל (`linePrice`). |
-| **`Customer.java`** | מייצג **לקוח**. כולל מזהה לקוח (`customerID`), שם חברה, איש קשר, תפקיד, כתובת, עיר, מדינה, טלפון ופקס. |
-| **`Employee.java`** | מייצג **עובד**. כולל מזהה עובד, שם פרטי ומשפחה, תואר, תאריך לידה, תאריך גיוס, כתובת, טלפון ותמונה. |
-| **`Product.java`** | מייצג **מוצר**. כולל מזהה מוצר, שם מוצר, קשר ל-`Supplier` (ספק), קשר ל-`Category` (קטגוריה), מחיר יחידה ומלאי במחסן. |
-| **`Category.java`** | מייצג **קטגוריית מוצרים**. כולל מזהה קטגוריה, שם קטגוריה ותיאור. |
-| **`Supplier.java`** | מייצג **ספק מוצרים**. כולל מזהה ספק, שם חברה, פרטי איש קשר, כתובת מלאה ואתר אינטרנט. |
-| **`Shipper.java`** | מייצג **חברת שילוח**. כולל מזהה משלח ושם החברה. |
-| **`north2000DB.accdb`** | **מסד הנתונים הראשי** של המערכת (קובץ מסד נתונים של Microsoft Access) המכיל את כלל הטבלאות, הקשרים והפרוצדורות. |
+| **`Order.java`** | Represents a customer order. Holds direct OOP references to `Customer`, `Employee`, `Shipper`, order dates, and shipping destination addresses. |
+| **`OrderDetails.java`** | Represents an order line item. Links `Order` and `Product`, holding quantity, discount rate, unit price, and calculated line price. |
+| **`Customer.java`** | Represents a client/company. Includes `customerID`, company name, contact person, address, phone, and fax. |
+| **`Employee.java`** | Represents an organization staff member. Includes employee ID, name, title, hire date, birth date, contact details, and photo path. |
+| **`Product.java`** | Represents an inventory item. Links to `Supplier` and `Category`, holding product name, unit price, and stock levels. |
+| **`Category.java`** | Represents a product classification (e.g., Beverages, Condiments, Produce). |
+| **`Supplier.java`** | Represents an external product vendor. Includes supplier ID, company name, address, contact details, and homepage. |
+| **`Shipper.java`** | Represents a shipping carrier (e.g., Speedy Express, Federal Shipping). |
+| **`north2000DB.accdb`** | **Primary Database File**. Microsoft Access database storing all relational tables, indexes, constraints, and stored queries. |
 
 ---
 
-### 4. כלי עזר ותשתיות – `src/util/`
-| קובץ | תיאור |
+### 4. Utilities & Support – `src/util/`
+| File | Description |
 | :--- | :--- |
-| **`JTextFieldLimiter.java`** | רכיב עזר להגבלת מספר התווים המקסימלי שמשתמש יכול להקליד בשדות טקסט של Swing (`PlainDocument`). |
+| **`JTextFieldLimiter.java`** | Custom `PlainDocument` extension that restricts input character length on Swing text input fields. |
 
 ---
 
-### 5. קובצי נתונים וספריות חיצוניות
+### 5. Data Interchange & Libraries
 
-- **`xml/customers.xml`** / **`resources/customers.xml`** – קובץ XML סטנדרטי המכיל נתוני לקוחות לטובת מודול הייבוא/ייצוא.
-- **`json/customers.json`** – קובץ JSON המכיל נתוני לקוחות לטובת תקשורת בפורמט JSON.
-- **`lib/`** – ספריות JAR הנדרשות לריצת הפרויקט:
-  - `UCanAccess-5.0.1.bin` – דרייבר JDBC טהור ב-Java המאפשר קריאה וכתיבה לקובצי Access (`.accdb` / `.mdb`) ללא תלות ב-ODBC מקומי.
-  - `json-simple-2.3.0.jar` – ספרייה לקריאה, כתיבה ועיבוד מסמכי JSON.
-  - `jcalendar-1.4.jar` – רכיבי Swing מתקדמים לבחירת תאריכים מלוח שנה (`JDateChooser`).
-  - `guava-19.0.jar` – ספריות הרחבה של Google עבור Collections ומבני נתונים.
-  - ספריות **JasperReports** – מנוע קומפילציה, מילוי ותצוגה של דוחות גרפיים וטבלאיים.
-
----
-
-## 🛠️ דרישות מערכת וטכנולוגיות
-
-- **שפת פיתוח:** Java (תאימות מלאה ל-**JDK 21** / Java 17 ומעלה).
-- **סביבת ממשק (GUI):** Java Swing & AWT.
-- **מסד נתונים (DBMS):** Microsoft Access (`north2000DB.accdb`).
-- **קישוריות נתונים:** JDBC via UCanAccess 5.0.1.
-- **דוחות:** JasperReports.
-- **פורמטי העברת מידע:** XML (W3C DOM) ו-JSON (JSON-Simple).
+- **`xml/customers.xml` & `resources/customers.xml`**: XML data files for customer import/export workflows.
+- **`json/customers.json`**: JSON data file for JSON serialization and parsing routines.
+- **`lib/`**: External runtime dependencies:
+  - `UCanAccess-5.0.1.bin`: Pure Java JDBC driver for accessing Microsoft Access `.accdb`/`.mdb` files without ODBC dependencies.
+  - `json-simple-2.3.0.jar`: Lightweight library for JSON encoding and decoding.
+  - `jcalendar-1.4.jar`: GUI date-picker component library (`JDateChooser`).
+  - `guava-19.0.jar`: Google Core Libraries for Java collections and utilities.
+  - **JasperReports**: Reporting engine libraries for report compilation, parameter binding, and visual rendering.
 
 ---
 
-## 🚀 הוראות הרצה ובנייה
+## 🛠️ Technology Stack & Requirements
 
-### הרצה מתוך סביבת פיתוח (Eclipse / IntelliJ / Antigravity IDE)
-1. פתח את סביבת הפיתוח וייבא את הפרויקט כ-**Existing Java Project**.
-2. ודא שכל קובצי ה-JAR בתיקיית `lib/` וקובצי ה-UCanAccess מוגדרים ב-**Java Build Path**.
-3. הרץ את הקובץ הראשי:
+- **Language:** Java (Fully compatible with **JDK 21** / Java 17+)
+- **User Interface:** Java Swing & AWT
+- **Database:** Microsoft Access (`north2000DB.accdb`)
+- **Database Connectivity:** JDBC via UCanAccess 5.0.1
+- **Reporting Engine:** JasperReports
+- **Data Formats:** XML (W3C DOM Parser) and JSON (JSON-Simple)
+
+---
+
+## 🚀 Build & Run Instructions
+
+### Running from an IDE (Eclipse / IntelliJ / Antigravity IDE)
+1. Import the repository as an **Existing Java Project**.
+2. Ensure all JAR files in `lib/` and the UCanAccess driver folders are added to the **Java Build Path**.
+3. Run the main class:
    ```
    src/boundary/North2000.java
    ```
 
-### קומפילציה והרצה משורת הפקודה (Terminal / PowerShell)
+### Command Line Build & Execution (Terminal / PowerShell)
 
-**1. קומפילציה:**
+**1. Compile all source files:**
 ```powershell
 javac --release 21 -cp "bin;lib/*;lib/lib/*;lib/UCanAccess-5.0.1.bin/*;lib/UCanAccess-5.0.1.bin/lib/*" -d bin src/entity/*.java src/control/*.java src/boundary/*.java src/util/*.java
 ```
 
-**2. הפעלת התוכנה:**
+**2. Launch the application:**
 ```powershell
 java -cp "bin;lib/*;lib/lib/*;lib/UCanAccess-5.0.1.bin/*;lib/UCanAccess-5.0.1.bin/lib/*" boundary.North2000
 ```
 
 ---
 
-## ✨ תכונות מרכזיות במערכת
+## ✨ Key Capabilities & Features
 
-- **ניהול הזמנות מתקדם:** צפייה בכל פרטי ההזמנה, דפדוף חלק בין מאות הזמנות, עדכון פרטי שילוח, והזנת מוצרים עם חישוב מחירים אוטומטי בזמן אמת.
-- **תאימות מלאה לעקרונות OOP:** כל רכיבי ה-UI (תיבות בחירה, טבלאות) עובדים ישירות מול אובייקטי דומיין מלאים (`Customer`, `Employee`, `Shipper`, `Product`).
-- **הפקת דוחות גרפיים וניהוליים:** הפקת דוחות JasperReports אינטראקטיביים עם יכולות הדפסה וייצוא לקובצי PDF.
-- **ייבוא וייצוא נתונים:** סנכרון נתוני לקוחות מול קובצי XML ו-JSON בלחיצת כפתור ישירות מתפריט המערכת.
+- **End-to-End Order Processing:** Browse seamlessly through hundreds of orders, update shipping carriers, and manage dynamic line items with instant subtotal and line-price calculations.
+- **Pure OOP Architecture:** UI ComboBoxes and table components interact directly with rich domain entities (`Customer`, `Employee`, `Shipper`, `Product`) rather than untyped wrapper primitives.
+- **Interactive Visual Reporting:** Generate parameter-driven JasperReports with interactive previews, print capabilities, and PDF export support.
+- **Dual Format Data Transfer:** Synchronize customer datasets with external systems via integrated XML and JSON import/export tools directly accessible from the main interface.
