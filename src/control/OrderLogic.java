@@ -83,7 +83,11 @@ public class OrderLogic {
             } catch (SQLException | JRException | IOException e) {
             	e.printStackTrace();
             }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
+        return null;
+    }
 
 
   //////////////////////////////////////////////////////////////////
