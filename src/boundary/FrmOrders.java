@@ -199,12 +199,9 @@ public class FrmOrders extends RootLayout {
 
 				tfCustomerID.setText(tfCustomerID.getText().toUpperCase());
 				int custemerByIdIndex = customers.indexOf(new Customer(tfCustomerID.getText().toUpperCase()));
-				if(custemerByIdIndex<=customers.size() && custemerByIdIndex>-1 ){
-				String companyName=
-						customers.get(custemerByIdIndex).getCompanyName();
-				Item object = new Item (tfCustomerID.getText(),companyName);
-
-				cbCustomerName.getModel().setSelectedItem(object);}
+				if(custemerByIdIndex < customers.size() && custemerByIdIndex >= 0 ){
+					cbCustomerName.getModel().setSelectedItem(customers.get(custemerByIdIndex));
+				}
 				else{cbCustomerName.getModel().setSelectedItem(null);}
 			}
 		});
@@ -241,11 +238,9 @@ public class FrmOrders extends RootLayout {
 						e.printStackTrace();
 					}
 
-				if(index<=shippersArray.size() && index>=0 ){
-				String name=shippersArray.get(index).getCompanyName();
-				Item object = new Item (tfShipViaID.getText(),name);
-
-				cbShipViaName.getModel().setSelectedItem(object);}
+				if(index < shippersArray.size() && index >= 0 ){
+					cbShipViaName.getModel().setSelectedItem(shippersArray.get(index));
+				}
 				else{cbShipViaName.getModel().setSelectedItem(null);}
 			}
 		});
@@ -260,12 +255,9 @@ public class FrmOrders extends RootLayout {
 				}
 				catch(NumberFormatException e){e.printStackTrace();}
 
-				if(employeeByIdIndex<=employeeArray.size() && employeeByIdIndex>-1 ){
-				String empName=
-						employeeArray.get(employeeByIdIndex).fullNametoString();
-				Item object = new Item (tfEmployeeID.getText(),empName);
-
-				cbEmployeeName.getModel().setSelectedItem(object);}
+				if(employeeByIdIndex < employeeArray.size() && employeeByIdIndex >= 0 ){
+					cbEmployeeName.getModel().setSelectedItem(employeeArray.get(employeeByIdIndex));
+				}
 				else{cbEmployeeName.getModel().setSelectedItem(null);}
 			}
 		});
@@ -436,47 +428,26 @@ public class FrmOrders extends RootLayout {
 
 	private void initSelectCusomers()
 	{
-
-		customers= OrderLogic.getInstance().getCustomers();
-		Vector model = new Vector();
-
-		int i=0;
-		while (i<customers.size()){
-			model.addElement( new Item(customers.get(i).getCustomerID(), customers.get(i).getCompanyName()) );
-			;i++;}
-
-
+		customers = OrderLogic.getInstance().getCustomers();
+		Vector<Customer> model = new Vector<>(customers);
         cbCustomerName = new JComboBox( model );
         cbCustomerName.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
-
 	}
 
 	private void initSelectEmployee()
 	{
-
-		employeeArray= EmployeeLogic.getInstance().getEmployees();
-		Vector model = new Vector();
-		int i=0;
-		while (i<employeeArray.size()){
-			model.addElement( new Item(Long.toString(employeeArray.get(i).getEmployeeID()), employeeArray.get(i).fullNametoString()) );
-			;i++;}
+		employeeArray = EmployeeLogic.getInstance().getEmployees();
+		Vector<Employee> model = new Vector<>(employeeArray);
 		cbEmployeeName = new JComboBox( model );
 		cbEmployeeName.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
-
 	}
 
 	private void initSelectShipVia()
 	{
-
-		shippersArray= OrderLogic.getInstance().getshippers();
-		Vector model = new Vector();
-		int i=0;
-		while (i<shippersArray.size()){
-			model.addElement( new Item(Long.toString(shippersArray.get(i).getShipperID()), shippersArray.get(i).getCompanyName()) );
-			;i++;}
+		shippersArray = OrderLogic.getInstance().getshippers();
+		Vector<Shipper> model = new Vector<>(shippersArray);
 		cbShipViaName = new JComboBox( model );
 		cbShipViaName.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
-
 	}
 
 
@@ -557,46 +528,47 @@ public class FrmOrders extends RootLayout {
 	    {
 	    	if (!inAddMode)
 	    	{
-	    	int custemerByIdIndex = customers.indexOf(new Customer(tfCustomerID.getText()));
-			if(custemerByIdIndex<=customers.size() && custemerByIdIndex>0 ){
-			String companyName=	customers.get(custemerByIdIndex).getCompanyName();
-			Item object = new Item (tfCustomerID.getText(),companyName);
-			cbCustomerName.getModel().setSelectedItem(object);
-			}}
-			else{cbCustomerName.getModel().setSelectedItem("select");
+	    		int custemerByIdIndex = customers.indexOf(new Customer(tfCustomerID.getText()));
+				if(custemerByIdIndex < customers.size() && custemerByIdIndex >= 0 ){
+					cbCustomerName.getModel().setSelectedItem(customers.get(custemerByIdIndex));
+				}
 			}
-
-
+			else{cbCustomerName.getModel().setSelectedItem(null);
+			}
 	   }
+
 	    private void refreshEmpComBoxSelectedByID ()
 	    {
 	    	if (!inAddMode)
 	    	{
-	    	int empByIdIndex = employeeArray.indexOf(new Employee(Long.parseLong(tfEmployeeID.getText())));
-			if(empByIdIndex<=employeeArray.size() && empByIdIndex>0 ){
-			String fullName=	employeeArray.get(empByIdIndex).fullNametoString();
-			Item object = new Item (tfEmployeeID.getText(),fullName);
-			cbEmployeeName.getModel().setSelectedItem(object);
-			}}
-			else{cbEmployeeName.getModel().setSelectedItem("select");
+	    		try {
+	    			int empByIdIndex = employeeArray.indexOf(new Employee(Long.parseLong(tfEmployeeID.getText())));
+					if(empByIdIndex < employeeArray.size() && empByIdIndex >= 0 ){
+						cbEmployeeName.getModel().setSelectedItem(employeeArray.get(empByIdIndex));
+					}
+	    		} catch(Exception e) {
+	    			cbEmployeeName.getModel().setSelectedItem(null);
+	    		}
 			}
-
-
+			else{cbEmployeeName.getModel().setSelectedItem(null);
+			}
 	   }
+
 	    private void refreshShipViaComBoxSelectedByID ()
 	    {
 	    	if (!inAddMode)
 	    	{
-	    	int index = shippersArray.indexOf(new Shipper(Long.parseLong(tfShipViaID.getText())));
-			if(index<=shippersArray.size() && index>0 ){
-			String company=	shippersArray.get(index).getCompanyName();
-			Item object = new Item (tfShipViaID.getText(),company);
-			cbShipViaName.getModel().setSelectedItem(object);
-			}}
-			else{cbShipViaName.getModel().setSelectedItem("select");
+	    		try {
+	    			int index = shippersArray.indexOf(new Shipper(Long.parseLong(tfShipViaID.getText())));
+					if(index < shippersArray.size() && index >= 0 ){
+						cbShipViaName.getModel().setSelectedItem(shippersArray.get(index));
+					}
+	    		} catch(Exception e) {
+	    			cbShipViaName.getModel().setSelectedItem(null);
+	    		}
 			}
-
-
+			else{cbShipViaName.getModel().setSelectedItem(null);
+			}
 	   }
 
 	    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -722,61 +694,36 @@ public class FrmOrders extends RootLayout {
 	    	   JOptionPane.showMessageDialog(this, s);
 	    	}
 
-	    class ItemRenderer extends BasicComboBoxRenderer
-	    {
-	        public Component getListCellRendererComponent(
-	            JList list, Object value, int index,
-	            boolean isSelected, boolean cellHasFocus)
-	        {
-	            super.getListCellRendererComponent(list, value, index,
-	                isSelected, cellHasFocus);
-
-	            if (value != null)
-	            {
-	                Item item = (Item)value;
-	                setText( item.getDescription().toUpperCase() );
-	            }
-
-	            if (index == -1)
-	            {
-	                Item item = (Item)value;
-	                setText( "" + item.getId() );
-	            }
-
-
-	            return this;
-	        }
-	    }
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Set Id according combobox chosen description
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		 private void refreshCustomerIdOnNameChange (ActionEvent e) {
 	 		JComboBox comboBox = (JComboBox)e.getSource();
-	 		if (comboBox.getSelectedItem() != "select"){
-	        Item item = (Item)comboBox.getSelectedItem();
-	        if (item!=null){
-	        tfCustomerID.setText(item.getId());
-	        }}
+	 		Object selected = comboBox.getSelectedItem();
+	 		if (selected instanceof Customer){
+		        Customer customer = (Customer) selected;
+		        tfCustomerID.setText(customer.getCustomerID());
+	        }
 		}
 
 		 private void refreshEmpIdOnNameChange (ActionEvent e) {
 	 		JComboBox comboBox = (JComboBox)e.getSource();
-	 		if (comboBox.getSelectedItem() != "select"){
-	        Item item = (Item)comboBox.getSelectedItem();
-	        if (item!=null){
-	        tfEmployeeID.setText(item.getId());
-	        }}
+	 		Object selected = comboBox.getSelectedItem();
+	 		if (selected instanceof Employee){
+		        Employee emp = (Employee) selected;
+		        tfEmployeeID.setText(Long.toString(emp.getEmployeeID()));
+	        }
 		}
 
 		 private void refreshtfShipViaIDOnNameChange (ActionEvent e) {
-		 		JComboBox comboBox = (JComboBox)e.getSource();
-		 		if (comboBox.getSelectedItem() != "select"){
-		        Item item = (Item)comboBox.getSelectedItem();
-		        if (item!=null){
-		        	tfShipViaID.setText(item.getId());
-		        	}}
-			}
+	 		JComboBox comboBox = (JComboBox)e.getSource();
+	 		Object selected = comboBox.getSelectedItem();
+	 		if (selected instanceof Shipper){
+		        Shipper shipper = (Shipper) selected;
+		        tfShipViaID.setText(Long.toString(shipper.getShipperID()));
+	        }
+		}
 
 
 

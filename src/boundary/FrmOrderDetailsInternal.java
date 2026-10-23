@@ -25,7 +25,7 @@ public class FrmOrderDetailsInternal extends JPanel {
 	private static  JTable table;
 	private  JScrollPane scrollPane;
 	private static DefaultTableModel tableModel;
-	private static JComboBox<Item> comboBoxProductName;
+	private static JComboBox<Product> comboBoxProductName;
 	private JButton btnSaveOrderDetails = new JButton("Save");
 	private JButton btnDeleteOrderDetails;
 	private JLabel lblTotalOrderPrice;
@@ -260,16 +260,8 @@ public void setUpProductNameColumnComboBox(JTable table,TableColumn columnNum) {
 
 		//Set combo-box item list data - get product id and name
 		products = ProductLogic.getInstance().getProducts();
-		Vector<Item> combomodel = new Vector<Item>();
-			
-			for (int i =0 ;i<products.size();i++)
-			{
-				Item item = new Item(Long.toString(products.get(i).getProductID()), products.get(i).getProductName());
-				combomodel.addElement( item );
-				;i++;
-				
-			}
-			comboBoxProductName = new JComboBox( combomodel );
+		Vector<Product> combomodel = new Vector<Product>(products);
+		comboBoxProductName = new JComboBox<Product>( combomodel );
 
 		//Set action when value change update table row according to new selected product and enable saving changes button
 		comboBoxProductName.addActionListener(new ActionListener() {
@@ -314,13 +306,11 @@ public void setUpTextEditor(JTable table,int colIndex,JTextField cell) {
 						public void keyReleased(KeyEvent arg0) {
 							//Get product selected for combo-box by its Id
 							int index = (cell.getText().length()>0) ? products.indexOf(new Product(Long.parseLong(cell.getText()))): -1;
-							if (index <= products.size() && index > -1) {
-								String name = products.get(index).getProductName();
-								//Retrieve object item (id+name) for combo-box selection
-								Item object = new Item(cell.getText(), name);
-								table.setValueAt(object, table.getSelectedRow(),1);
+							if (index < products.size() && index >= 0) {
+								Product product = products.get(index);
+								table.setValueAt(product.getProductName(), table.getSelectedRow(), 1);
 							//Update row according to product selection
-								updateRowNewProduct(Long.parseLong(object.getId()));
+								updateRowNewProduct(product.getProductID());
 								getOrderSubTotal();
 							//If no empty row add new one
 								if (table.getSelectedRow()==table.getRowCount()-1){
@@ -329,8 +319,7 @@ public void setUpTextEditor(JTable table,int colIndex,JTextField cell) {
 
 							} else {
 								//If product not found set combo to present instruction for user
-								Item object = new Item(null, "please select valid product");
-								table.setValueAt(object, table.getSelectedRow(),1);
+								table.setValueAt("please select valid product", table.getSelectedRow(), 1);
 							}
 
 						}
@@ -395,12 +384,11 @@ public void setUpTextEditor(JTable table,int colIndex,JTextField cell) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	private void refreshProductIdOnNameChange (ActionEvent e) {
 		JComboBox comboBox = (JComboBox)e.getSource();
-		if (comboBox.getSelectedItem() != "please select valid product"){
-	Item item = (Item)comboBox.getSelectedItem();
-	if (item!=null){
-		table.setValueAt(item.getId(), table.getSelectedRow(),0);
-	}
-	updateRowNewProduct(Long.parseLong(item.getId()));
+		Object selected = comboBox.getSelectedItem();
+		if (selected instanceof Product){
+			Product product = (Product) selected;
+			table.setValueAt(product.getProductID(), table.getSelectedRow(), 0);
+			updateRowNewProduct(product.getProductID());
 		}
 	}
 

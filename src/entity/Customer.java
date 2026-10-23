@@ -187,8 +187,6 @@ public class Customer {
 	 */
 	@Override
 	public String toString() {
-		return String.format(
-				"Customer [CUSTOMER_ID=%s, companyName=%s, contactName=%s, contactTitle=%s, address=%s, city=%s, country=%s, phone=%s, fax=%s]",
-				CUSTOMER_ID, companyName, contactName, contactTitle, address, city, country, phone, fax);
+		return companyName != null && !companyName.isEmpty() ? companyName : (CUSTOMER_ID != null ? CUSTOMER_ID : "");
 	}
 }

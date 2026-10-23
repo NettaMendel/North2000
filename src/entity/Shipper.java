@@ -44,4 +44,9 @@ public class Shipper {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return companyName != null && !companyName.isEmpty() ? companyName : ("Shipper #" + shipperID);
+	}
+
 }
