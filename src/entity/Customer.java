@@ -1,4 +1,4 @@
-package model;
+package entity;
 
 public class Customer {
 	final String CUSTOMER_ID, companyName;

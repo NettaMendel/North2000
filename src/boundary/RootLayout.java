@@ -23,6 +23,7 @@ import javax.swing.event.MenuListener;
 import javax.swing.event.MenuEvent;
 import javax.swing.JLabel;
 import java.awt.Color;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 public class RootLayout extends JFrame {
@@ -158,6 +159,66 @@ public class RootLayout extends JFrame {
 				}
 			});
 			menuBar.add(mnEmployees);
+
+			JMenu mnReports = new JMenu("Reports");
+			mnReports.addMenuListener(new MenuListener() {
+				public void menuCanceled(MenuEvent e) {}
+				public void menuDeselected(MenuEvent e) {}
+				public void menuSelected(MenuEvent e) {
+					FrmReportMenu reportMenu = new FrmReportMenu();
+					reportMenu.setLocationRelativeTo(null);
+					reportMenu.setVisible(true);
+				}
+			});
+			menuBar.add(mnReports);
+
+			JMenu mnData = new JMenu("XML / JSON");
+
+			JMenuItem miExportJson = new JMenuItem("Export Customers to JSON");
+			miExportJson.addActionListener(e -> {
+				try {
+					control.CustomerLogic.getInstance().exportCustomersToJSON();
+					JOptionPane.showMessageDialog(null, "Customers successfully exported to JSON (json/customers.json)!", "Export Success", JOptionPane.INFORMATION_MESSAGE);
+				} catch (Exception ex) {
+					JOptionPane.showMessageDialog(null, "Error exporting to JSON: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				}
+			});
+			mnData.add(miExportJson);
+
+			JMenuItem miImportJson = new JMenuItem("Import Customers from JSON");
+			miImportJson.addActionListener(e -> {
+				try {
+					control.CustomerLogic.getInstance().importCustomersFromJSON("json/customers.json");
+					JOptionPane.showMessageDialog(null, "Customers successfully imported from JSON!", "Import Success", JOptionPane.INFORMATION_MESSAGE);
+				} catch (Exception ex) {
+					JOptionPane.showMessageDialog(null, "Error importing from JSON: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				}
+			});
+			mnData.add(miImportJson);
+
+			JMenuItem miExportXml = new JMenuItem("Export Customers to XML");
+			miExportXml.addActionListener(e -> {
+				try {
+					control.CustomerLogic.getInstance().exportCustomersToXML();
+					JOptionPane.showMessageDialog(null, "Customers successfully exported to XML (xml/customers.xml)!", "Export Success", JOptionPane.INFORMATION_MESSAGE);
+				} catch (Exception ex) {
+					JOptionPane.showMessageDialog(null, "Error exporting to XML: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				}
+			});
+			mnData.add(miExportXml);
+
+			JMenuItem miImportXml = new JMenuItem("Import Customers from XML");
+			miImportXml.addActionListener(e -> {
+				try {
+					control.CustomerLogic.getInstance().importCustomersFromXML("xml/customers.xml");
+					JOptionPane.showMessageDialog(null, "Customers successfully imported from XML!", "Import Success", JOptionPane.INFORMATION_MESSAGE);
+				} catch (Exception ex) {
+					JOptionPane.showMessageDialog(null, "Error importing from XML: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				}
+			});
+			mnData.add(miImportXml);
+
+			menuBar.add(mnData);
 
 	        setJMenuBar(menuBar);
 	        
