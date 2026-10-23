@@ -3,12 +3,15 @@ package entity;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import control.OrderLogic;
+
 public class OrderDetails {
 
-	private final long orderID;
-	private final long productID;
-
-	 private String productName;
+	//private final long orderID;
+	//private final long productID;
+	
+	private final Order order;
+	private final Product product;
 
     private int quantity;
     private float discount;
@@ -23,32 +26,24 @@ public class OrderDetails {
     public static final int MAX_DISCOUNT = 3;
 
 
-    public OrderDetails(long orderID, long productID,String productName, int quantity, float discount,
+    public OrderDetails(Order order, Product product,String productName, int quantity, float discount,
     		BigDecimal unitPrice, BigDecimal linePrice) {
 		super();
-		this.orderID = orderID;
-		this.productID = productID;
+		//this.orderID = orderID;
+		//this.productID = productID;
+		this.order = order;
+		this.product = product;
 		this.quantity = quantity;
 		this.discount = discount;
-		this.productName = productName;
 		this.unitPrice = unitPrice.setScale(2);
 		
 		this.linePrice = linePrice.setScale(2, BigDecimal.ROUND_HALF_UP);
 	}
 
-	public OrderDetails(long orderID,long productID) {
+	public OrderDetails(Order order,Product product) {
 		super();
-		this.orderID = orderID;
-		this.productID = productID;
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (int) (orderID ^ (orderID >>> 32));
-		result = prime * result + (int) (productID ^ (productID >>> 32));
-		return result;
+		this.order = order;
+		this.product = product;
 	}
 
 
@@ -61,20 +56,20 @@ public class OrderDetails {
 		if (getClass() != obj.getClass())
 			return false;
 		OrderDetails other = (OrderDetails) obj;
-		if (orderID != other.orderID)
+		if (order.equals(other.order))
 			return false;
-		if (productID != other.productID)
+		if (product.equals(other.product))
 			return false;
 		return true;
 	}
 
-	public long getOrderID() {
-		return orderID;
+	public Order getOrder() {
+		return order;
 	}
 
 
-	public long getProductID() {
-		return productID;
+	public Product getProduct() {
+		return product;
 	}
 
 
@@ -85,11 +80,6 @@ public class OrderDetails {
 
 	public float getDiscount() {
 		return discount;
-	}
-
-
-	public String getProductName() {
-		return productName;
 	}
 
 
@@ -113,11 +103,6 @@ public class OrderDetails {
 	}
 
 
-	public void setProductName(String productName) {
-		this.productName = productName;
-	}
-
-
 	public void setUnitPrice(BigDecimal unitPrice) {
 		this.unitPrice = unitPrice;
 	}
@@ -128,8 +113,8 @@ public class OrderDetails {
 	}
 	@Override
 	public String toString() {
-		return "OrderDetails [orderID=" + orderID + ", productID=" + productID + ", quantity=" + quantity
-				+ ", discount=" + discount + ", productName=" + productName + ", unitPrice=" + unitPrice
+		return "OrderDetails [orderID=" + order.toString() + ", productID=" + product.toString() + ", quantity=" + quantity
+				+ ", discount=" + discount + ", unitPrice=" + unitPrice
 				+ ", linePrice=" + linePrice + "]";
 	}
 
