@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.text.NumberFormat;
 import javax.swing.event.*;
 import control.OrderLogic;
+import control.ProductLogic;
 import entity.OrderDetails;
 import entity.Product;
 
@@ -258,7 +259,7 @@ private void initTableData(){
 public void setUpProductNameColumnComboBox(JTable table,TableColumn columnNum) {
 
 		//Set combo-box item list data - get product id and name
-		products = OrderLogic.getInstance().getProducts();
+		products = ProductLogic.getInstance().getProducts();
 		Vector<Item> combomodel = new Vector<Item>();
 			
 			for (int i =0 ;i<products.size();i++)
@@ -423,7 +424,7 @@ public void setUpTextEditor(JTable table,int colIndex,JTextField cell) {
 
 
 	public void updateRowNewProduct(long id){
-		products = OrderLogic.getInstance().getProducts();
+		products = ProductLogic.getInstance().getProducts();
 	    int productArrayIndex= products.indexOf(new Product(id));
 	    BigDecimal unitPrice = products.get(productArrayIndex).getUnitPrice();
      	table.setValueAt(unitPrice, table.getSelectedRow(),2);

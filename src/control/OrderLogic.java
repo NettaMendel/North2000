@@ -93,9 +93,9 @@ public class OrderLogic {
         return null;
     }
 
-    /////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
     // READ ORDERS FROM DB
-    /////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
     public ArrayList<Customer> getCustomers() {
         ArrayList<Customer> results = new ArrayList<Customer>();
 
@@ -138,39 +138,6 @@ public class OrderLogic {
         }
 
         return results;
-    }
-
-    public ArrayList<Product> getProducts() {
-        ArrayList<Product> results = new ArrayList<Product>();
-
-        try {
-            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
-            try (Connection conn = DriverManager.getConnection(Consts.CONN_STR);
-                    PreparedStatement stmt = conn.prepareStatement(Consts.SQL_SEL_PRODUCTS);
-                    ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    int i = 1;
-                    results.add(new Product(Long.parseLong(rs.getString(i++)), rs.getString(i++),
-                            Long.parseLong(rs.getString(i++)), Long.parseLong(rs.getString(i++)),
-                            new BigDecimal(rs.getString(i++)), Integer.parseInt(rs.getString(i++))));
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        return results;
-    }
-
-    public Product getProduct(long productID) {
-        for (Product p : getProducts()) {
-            if (p.getProductID() != null && p.getProductID() == productID) {
-                return p;
-            }
-        }
-        return null;
     }
 
     public ArrayList<Order> getOrders() {
@@ -398,7 +365,7 @@ public class OrderLogic {
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next()) {
                     int i = 1;
-                    results.add(new OrderDetails(getOrder(rs.getLong(i++)),getProduct( rs.getLong(i++)),
+                    results.add(new OrderDetails(getOrder(rs.getLong(i++)), getProduct(rs.getLong(i++)),
                             rs.getString(i++), rs.getInt(i++), rs.getFloat(i++),
                             rs.getBigDecimal(i++), rs.getBigDecimal(i++)));
 
