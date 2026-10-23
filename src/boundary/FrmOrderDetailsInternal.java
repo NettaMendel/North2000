@@ -77,12 +77,12 @@ public class FrmOrderDetailsInternal extends JPanel {
 
 		    //Set table dimensions
 		    TableColumnModel columnModel = table.getColumnModel();
-		    columnModel.getColumn(0).setPreferredWidth(250);
-		    columnModel.getColumn(1).setPreferredWidth(1500);
-		    columnModel.getColumn(2).setPreferredWidth(300);
-		    columnModel.getColumn(3).setPreferredWidth(250);
-		    columnModel.getColumn(4).setPreferredWidth(250);
-		    columnModel.getColumn(5).setPreferredWidth(250);
+		    columnModel.getColumn(0).setPreferredWidth(450);
+		    columnModel.getColumn(1).setPreferredWidth(1200);
+		    columnModel.getColumn(2).setPreferredWidth(350);
+		    columnModel.getColumn(3).setPreferredWidth(300);
+		    columnModel.getColumn(4).setPreferredWidth(350);
+		    columnModel.getColumn(5).setPreferredWidth(350);
 
 		   //add save and delete button
 		    btnSaveOrderDetails.setHorizontalAlignment(SwingConstants.LEFT);

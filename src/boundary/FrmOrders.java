@@ -114,11 +114,11 @@ public class FrmOrders extends RootLayout {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(FrmEmployees.class.getResource("/boundary/images/logo.png")));
 		setTitle("Order Details");
 		contentPane.setLayout(null);
-		pnlEmpDetails.setBounds(21, 11, 339, 171);
+		pnlEmpDetails.setBounds(21, 11, 345, 171);
 		pnlEmpDetails.setBorder(null);
 		contentPane.add(pnlEmpDetails);
 		tfOrderID = new JTextField();
-		tfOrderID.setBounds(84, 11, 179, 20);
+		tfOrderID.setBounds(105, 11, 160, 20);
 		tfOrderID.setEditable(false);
 		tfOrderID.setColumns(10);
 
@@ -126,11 +126,11 @@ public class FrmOrders extends RootLayout {
 		tfCustomerID = new JTextField();
 		tfCustomerID.setColumns(20);
 
-		tfCustomerID.setBounds(84, 37, 54, 20);
+		tfCustomerID.setBounds(105, 37, 48, 20);
 
 		tfEmployeeID = new JTextField();
 
-		tfEmployeeID.setBounds(84, 63, 54, 20);
+		tfEmployeeID.setBounds(105, 63, 48, 20);
 		tfEmployeeID.setColumns(10);
 		pnlEmpContact.setBounds(370, 11, 355, 156);
 		contentPane.add(pnlEmpContact);
@@ -172,7 +172,7 @@ public class FrmOrders extends RootLayout {
         btnAdd.setEnabled(!inAddMode);
 
 
-        initSelectCusomers();
+        initSelectCustomers();
         initSelectEmployee();
         initSelectShipVia();
 
@@ -199,9 +199,9 @@ public class FrmOrders extends RootLayout {
 			public void keyReleased(KeyEvent arg0) {
 
 				tfCustomerID.setText(tfCustomerID.getText().toUpperCase());
-				int custemerByIdIndex = customers.indexOf(new Customer(tfCustomerID.getText().toUpperCase()));
-				if(custemerByIdIndex < customers.size() && custemerByIdIndex >= 0 ){
-					cbCustomerName.getModel().setSelectedItem(customers.get(custemerByIdIndex));
+				int customerByIdIndex = customers.indexOf(new Customer(tfCustomerID.getText().toUpperCase()));
+				if(customerByIdIndex < customers.size() && customerByIdIndex >= 0 ){
+					cbCustomerName.getModel().setSelectedItem(customers.get(customerByIdIndex));
 				}
 				else{cbCustomerName.getModel().setSelectedItem(null);}
 			}
@@ -395,39 +395,39 @@ public class FrmOrders extends RootLayout {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	private void initGroupLayoutleftPanel() {
 			pnlEmpDetails.setLayout(null);
-			lblOrderID.setBounds(10, 14, 64, 14);
+			lblOrderID.setBounds(10, 14, 90, 14);
 			pnlEmpDetails.add(lblOrderID);
-			lblOrderDate.setBounds(10, 91, 64, 14);
+			lblOrderDate.setBounds(10, 91, 90, 14);
 			pnlEmpDetails.add(lblOrderDate);
-			lblCustomer.setBounds(10, 40, 54, 14);
+			lblCustomer.setBounds(10, 40, 90, 14);
 			pnlEmpDetails.add(lblCustomer);
-			lblEmployeeID.setBounds(10, 66, 55, 14);
+			lblEmployeeID.setBounds(10, 66, 90, 14);
 			pnlEmpDetails.add(lblEmployeeID);
-			lblRequiredDate.setBounds(10, 117, 73, 14);
+			lblRequiredDate.setBounds(10, 117, 90, 14);
 			pnlEmpDetails.add(lblRequiredDate);
-			dtcRequiredDate.setBounds(84, 117, 179, 20);
+			dtcRequiredDate.setBounds(105, 117, 160, 20);
 			pnlEmpDetails.add(dtcRequiredDate);
-			dtcOrderDate.setBounds(84, 91, 179, 20);
+			dtcOrderDate.setBounds(105, 91, 160, 20);
 			pnlEmpDetails.add(dtcOrderDate);
 			pnlEmpDetails.add(tfEmployeeID);
 			pnlEmpDetails.add(tfCustomerID);
 			pnlEmpDetails.add(tfOrderID);
-			cbCustomerName.setBounds(148, 37, 179, 20);
+			cbCustomerName.setBounds(158, 37, 175, 20);
 			pnlEmpDetails.add(cbCustomerName);
 
-			cbEmployeeName.setBounds(148, 63, 181, 20);
+			cbEmployeeName.setBounds(158, 63, 175, 20);
 			pnlEmpDetails.add(cbEmployeeName);
-			lblShippedDate.setBounds(10, 144, 73, 14);
+			lblShippedDate.setBounds(10, 144, 90, 14);
 			pnlEmpDetails.add(lblShippedDate);
 			dtcShippedDate = new JDateChooser();
-			dtcShippedDate.setBounds(84, 142, 179, 20);
+			dtcShippedDate.setBounds(105, 142, 160, 20);
 			pnlEmpDetails.add(dtcShippedDate);
 
 
 	}
 
 
-	private void initSelectCusomers()
+	private void initSelectCustomers()
 	{
 		customers = CustomerLogic.getInstance().getCustomers();
 		Vector<Customer> model = new Vector<>(customers);
