@@ -11,9 +11,15 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import entity.Employee;
+import entity.Order;
 
 public class EmployeeLogic {
     private static EmployeeLogic _instance;
+    
+    public static final String SQL_SEL_EMPLOYEES = "SELECT * FROM TblEmployees";
+    public static final String SQL_DEL_EMPLOYEE = "{ call qryDelEmployee(?) }";
+    public static final String SQL_INS_EMPLOYEE = "{ call qryInsEmployee(?,?,?,?,?,?,?,?,?,?,?) }";
+    public static final String SQL_UPD_EMPLOYEE = "{ call qryUpdEmployee(?,?,?,?,?,?,?,?,?,?,?,?) }";
 
     private EmployeeLogic() {
     }
@@ -35,7 +41,7 @@ public class EmployeeLogic {
         try {
             Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
             try (Connection conn = DriverManager.getConnection(Consts.CONN_STR);
-                    PreparedStatement stmt = conn.prepareStatement(Consts.SQL_SEL_EMPLOYEES);
+                    PreparedStatement stmt = conn.prepareStatement(SQL_SEL_EMPLOYEES);
                     ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     int i = 1;
@@ -55,6 +61,17 @@ public class EmployeeLogic {
         return results;
 
     }
+    
+    public Employee getEmployee(long EmpID) {
+        for (Employee e : getEmployees()) {
+            if (e.getEmployeeID() == EmpID) {
+                return e;
+            }
+        }
+        return null;
+    }
+    
+    
 
     /**
      * adds an employee to db file.
@@ -80,7 +97,7 @@ public class EmployeeLogic {
             Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
 
             try (Connection conn = DriverManager.getConnection(Consts.CONN_STR);
-                    CallableStatement stmt = conn.prepareCall(Consts.SQL_INS_EMPLOYEE)) {
+                    CallableStatement stmt = conn.prepareCall(SQL_INS_EMPLOYEE)) {
                 int i = 1;
 
                 stmt.setString(i++, lastName); // can't be null
@@ -139,7 +156,7 @@ public class EmployeeLogic {
             Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
 
             try (Connection conn = DriverManager.getConnection(Consts.CONN_STR);
-                    CallableStatement stmt = conn.prepareCall(Consts.SQL_DEL_EMPLOYEE)) {
+                    CallableStatement stmt = conn.prepareCall(SQL_DEL_EMPLOYEE)) {
                 stmt.setLong(1, employeeID);
                 stmt.executeUpdate();
                 return true;
@@ -160,7 +177,7 @@ public class EmployeeLogic {
             Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
 
             try (Connection conn = DriverManager.getConnection(Consts.CONN_STR);
-                    CallableStatement stmt = conn.prepareCall(Consts.SQL_UPD_EMPLOYEE)) {
+                    CallableStatement stmt = conn.prepareCall(SQL_UPD_EMPLOYEE)) {
                 int i = 1;
 
                 stmt.setString(i++, lastName); // can't be null

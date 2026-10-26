@@ -32,6 +32,7 @@ import com.toedter.calendar.JDateChooser;
 import control.CustomerLogic;
 import control.EmployeeLogic;
 import control.OrderLogic;
+import control.ShipperLogic;
 import entity.Customer;
 import entity.Employee;
 import entity.Order;
@@ -177,13 +178,16 @@ public class FrmOrdersPanel extends JPanel {
 		tfCustomerID.addKeyListener(new KeyAdapter() {
 			public void keyTyped(KeyEvent e) {	updateChangedField();	}
 			public void keyReleased(KeyEvent arg0) {
+			    tfCustomerID.setText(tfCustomerID.getText().toUpperCase());
 
-				tfCustomerID.setText(tfCustomerID.getText().toUpperCase());
-				int customerByIdIndex = customers.indexOf(new Customer(tfCustomerID.getText().toUpperCase()));
-				if(customerByIdIndex < customers.size() && customerByIdIndex >= 0 ){
-					cbCustomerName.getModel().setSelectedItem(customers.get(customerByIdIndex));
-				}
-				else{cbCustomerName.getModel().setSelectedItem(null);}
+			    String id = tfCustomerID.getText();
+
+			    Customer customer = customers.stream()
+			        .filter(c -> c.getCustomerID().equalsIgnoreCase(id))
+			        .findFirst()
+			        .orElse(null);
+
+			    cbCustomerName.getModel().setSelectedItem(customer);
 			}
 		});
 		cbEmployeeName.addActionListener(new ActionListener() {
@@ -425,7 +429,7 @@ public class FrmOrdersPanel extends JPanel {
 
 	private void initSelectShipVia()
 	{
-		shippersArray = OrderLogic.getInstance().getshippers();
+		shippersArray = ShipperLogic.getInstance().getshippers();
 		Vector<Shipper> model = new Vector<>(shippersArray);
 		cbShipViaName = new JComboBox( model );
 		cbShipViaName.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
@@ -505,18 +509,20 @@ public class FrmOrdersPanel extends JPanel {
 
 
 	    }
-	    private void refreshCustomerComBoxSelectedByID ()
-	    {
-	    	if (!inAddMode)
-	    	{
-	    		int custemerByIdIndex = customers.indexOf(new Customer(tfCustomerID.getText()));
-				if(custemerByIdIndex < customers.size() && custemerByIdIndex >= 0 ){
-					cbCustomerName.getModel().setSelectedItem(customers.get(custemerByIdIndex));
-				}
-			}
-			else{cbCustomerName.getModel().setSelectedItem(null);
-			}
-	   }
+	    private void refreshCustomerComBoxSelectedByID() {
+	        Customer customer = null;
+
+	        if (!inAddMode) {
+	            String id = tfCustomerID.getText();
+
+	            customer = customers.stream()
+	                .filter(c -> c.getCustomerID().equalsIgnoreCase(id))
+	                .findFirst()
+	                .orElse(null);
+	        }
+
+	        cbCustomerName.getModel().setSelectedItem(customer);
+	    }
 
 	    private void refreshEmpComBoxSelectedByID ()
 	    {

@@ -12,6 +12,8 @@ import entity.Product;
 
 public class ProductLogic {
 	private static ProductLogic instance;
+	
+	public static final String SQL_SEL_PRODUCTS = "SELECT TblProducts.* FROM TblProducts;";
 
 	private ProductLogic() {
 	}
@@ -28,7 +30,7 @@ public class ProductLogic {
 		try {
 			Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
 			try (Connection conn = DriverManager.getConnection(Consts.CONN_STR);
-					PreparedStatement stmt = conn.prepareStatement(Consts.SQL_SEL_PRODUCTS);
+					PreparedStatement stmt = conn.prepareStatement(SQL_SEL_PRODUCTS);
 					ResultSet rs = stmt.executeQuery()) {
 				while (rs.next()) {
 					int i = 1;

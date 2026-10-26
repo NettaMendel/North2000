@@ -2,6 +2,8 @@ package entity;
 
 import java.util.Date;
 
+import control.CustomerLogic;
+
 public class Order {
 	private final long orderID;
 	
@@ -42,14 +44,6 @@ public class Order {
 		this.shipCity = shipCity;
 		this.shipCountry = shipCountry;
 	}
-
-	public Order(long orderID, String customerID, long employeeID, Date orderDate, Date requiredDate, Date shippedDate,
-			int shipVia, String shipAddress, String shipCity, String shipCountry) {
-		this(orderID, customerID != null ? new Customer(customerID) : null,
-				new Employee(employeeID), orderDate, requiredDate, shippedDate,
-				new Shipper(shipVia), shipAddress, shipCity, shipCountry);
-	}
-
 
 	public Order(long orderID) {
 		super();
@@ -99,8 +93,8 @@ public class Order {
 	public String getCustomerID() {
 		return customer != null ? customer.getCustomerID() : null;
 	}
-	public void setCustomerID(String customerID) {
-		this.customer = customerID != null ? new Customer(customerID) : null;
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
 	}
 	public Employee getemployee() {
 		return employee;

@@ -1,7 +1,7 @@
 package entity;
 
 public class Customer {
-	final String CUSTOMER_ID, companyName;
+	final String customerID, companyName;
 	String contactName, contactTitle, 
 				address, city, country, phone, fax;
 	
@@ -11,10 +11,11 @@ public class Customer {
 			String phone, String fax) {
 		if (customerID == null || customerID.isEmpty())
 			throw new IllegalArgumentException("customerID is required!");
-		this.CUSTOMER_ID = customerID;
+		this.customerID = customerID;
 		if (companyName == null || companyName.isEmpty())
 			throw new IllegalArgumentException("companyName is required!");
 		this.companyName = companyName;
+		
 		this.contactName = contactName;
 		this.contactTitle = contactTitle;
 		this.address = address;
@@ -22,21 +23,6 @@ public class Customer {
 		this.country = country;
 		this.phone = phone;
 		this.fax = fax;
-	}
-	
-	public Customer(String customerID) {
-		this.CUSTOMER_ID = customerID;
-		this.companyName = "";
-	}
-
-	public Customer(String customerID, String companyName) {
-		if (customerID == null || customerID.isEmpty())
-			throw new IllegalArgumentException("customerID is required!");
-		this.CUSTOMER_ID = customerID;
-		if (companyName == null || companyName.isEmpty())
-			throw new IllegalArgumentException("companyName is required!");
-		this.companyName = companyName;
-		
 	}
 
 	/**
@@ -148,7 +134,7 @@ public class Customer {
 	 * @return the customerID
 	 */
 	public String getCustomerID() {
-		return CUSTOMER_ID;
+		return customerID;
 	}
 
 	/* (non-Javadoc)
@@ -158,7 +144,7 @@ public class Customer {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((CUSTOMER_ID == null) ? 0 : CUSTOMER_ID.hashCode());
+		result = prime * result + ((customerID == null) ? 0 : customerID.hashCode());
 		return result;
 	}
 
@@ -174,10 +160,10 @@ public class Customer {
 		if (getClass() != obj.getClass())
 			return false;
 		Customer other = (Customer) obj;
-		if (CUSTOMER_ID == null) {
-			if (other.CUSTOMER_ID != null)
+		if (customerID == null) {
+			if (other.customerID != null)
 				return false;
-		} else if (!CUSTOMER_ID.equals(other.CUSTOMER_ID))
+		} else if (!customerID.equals(other.customerID))
 			return false;
 		return true;
 	}
@@ -187,6 +173,6 @@ public class Customer {
 	 */
 	@Override
 	public String toString() {
-		return companyName != null && !companyName.isEmpty() ? companyName : (CUSTOMER_ID != null ? CUSTOMER_ID : "");
+		return companyName != null && !companyName.isEmpty() ? companyName : (customerID != null ? customerID : "");
 	}
 }

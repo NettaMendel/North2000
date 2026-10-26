@@ -1,6 +1,8 @@
 package control;
 
 import entity.Customer;
+import entity.Order;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -37,6 +39,11 @@ import control.Consts.Manipulation;
 
 public class CustomerLogic {
 	private static CustomerLogic instance;
+	
+    public static final String SQL_SELECT_ALL_CUSTOMERS = "SELECT * FROM TblCustomers";
+    public static final String SQL_INSERT_CUSTOMER = "{ call qryInsertCustomer(?,?,?,?,?,?,?,?,?); }";
+    public static final String SQL_UPDATE_CUSTOMER = "{ call qryUpdateCustomer(?,?,?,?,?,?,?,?,?); }";
+    public static final String SQL_DELETE_CUSTOMER = "{ call qryDeleteCustomer(?); }";
 
 	private CustomerLogic() {
 	}
@@ -55,7 +62,7 @@ public class CustomerLogic {
 			Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
 			try (Connection conn = DriverManager.getConnection(Consts.CONN_STR);
 					PreparedStatement stmt = conn.prepareStatement(
-							Consts.SELECT_ALL_CUSTOMERS);
+							SQL_SELECT_ALL_CUSTOMERS);
 					ResultSet rs = stmt.executeQuery()) {
 
 				// create document object.
@@ -168,7 +175,7 @@ public class CustomerLogic {
 			Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
 			try (Connection conn = DriverManager.getConnection(Consts.CONN_STR);
 					PreparedStatement stmt = conn.prepareStatement(
-							Consts.SELECT_ALL_CUSTOMERS);
+							SQL_SELECT_ALL_CUSTOMERS);
 					ResultSet rs = stmt.executeQuery()) {
 				JsonArray customers = new JsonArray();
 				while (rs.next()) {
@@ -247,9 +254,9 @@ public class CustomerLogic {
 			Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
 			try (Connection conn = DriverManager.getConnection(Consts.CONN_STR);
 					CallableStatement stmt = conn.prepareCall(
-							(manipulation.equals(Manipulation.UPDATE)) ? Consts.UPDATE_CUSTOMER
-									: (manipulation.equals(Manipulation.INSERT)) ? Consts.INSERT_CUSTOMER
-											: Consts.DELETE_CUSTOMER)) {
+							(manipulation.equals(Manipulation.UPDATE)) ? SQL_UPDATE_CUSTOMER
+									: (manipulation.equals(Manipulation.INSERT)) ? SQL_INSERT_CUSTOMER
+											: SQL_DELETE_CUSTOMER)) {
 				allocateCustomerParams(stmt, c, manipulation);
 				stmt.executeUpdate();
 				return true;
@@ -328,11 +335,14 @@ public class CustomerLogic {
         try {
             Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
             try (Connection conn = DriverManager.getConnection(Consts.CONN_STR);
-                    PreparedStatement stmt = conn.prepareStatement(Consts.SQL_SEL_CUSTOMERS);
+                    PreparedStatement stmt = conn.prepareStatement(SQL_SELECT_ALL_CUSTOMERS);
                     ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     int i = 1;
-                    results.add(new Customer(rs.getString(i++), rs.getString(i++)));
+                    results.add(new Customer(rs.getString(i++), rs.getString(i++), rs.getString(i++),
+                    		rs.getString(i++), rs.getString(i++), rs.getString(i++),
+                    		rs.getString(i++), rs.getString(i++), rs.getString(i++)));
+                    
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -342,5 +352,14 @@ public class CustomerLogic {
         }
 
         return results;
+    }
+    
+    public Customer getCustomer(String customerID) {
+        for (Customer c : getCustomers()) {
+            if (c.getCustomerID().equals(customerID)) {
+                return c;
+            }
+        }
+        return null;
     }
 }

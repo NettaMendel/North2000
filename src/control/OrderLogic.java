@@ -36,6 +36,20 @@ import entity.*;
 public class OrderLogic {
     /** Singleton instance. */
     private static OrderLogic instance;
+    
+    //Order qry
+    public static final String SQL_SEL_ORDERS = "SELECT * FROM TblOrders";
+    public static final String SQL_UPD_ORDER = "{ call qryUpdOrder(?,?,?,?,?,?,?,?,?,?) }";
+    public static final String SQL_ADD_ORDER = "{ call qryInsOrder(?,?,?,?,?,?,?,?,?) }";
+    public static final String SQL_DEL_ORDER = "{ call qryDelOrder(?) }";
+    
+    //Order Details qry    
+    public static final String SQL_DEL_ORDER_DETAILS = "{ call qryDelOrderDetails(?) }";
+    public static final String SQL_DEL_ORDER_DETAILS_PRODUCT = "{ call qryDelOrderDetailProduct(?,?) }";
+
+    public static final String SQL_SEL_ORDER_DETAILS = "SELECT TblOrderDetails.orderID, TblOrderDetails.ProductID, TblProducts.ProductName, TblOrderDetails.Quantity, TblOrderDetails.Discount, TblProducts.UnitPrice, [TblProducts].[UnitPrice]*[TblOrderDetails].[Quantity]*(1-[TblOrderDetails].[Discount]) AS LinePrice FROM TblProducts INNER JOIN TblOrderDetails ON TblProducts.ProductID = TblOrderDetails.ProductID WHERE (((TblOrderDetails.OrderID)=?));";
+    public static final String SQL_UPD_ORDER_DETAILS = "{ call qryUpdOrderDetails(?,?,?,?) }";
+    public static final String SQL_INS_ORDER_DETAILS = "{ call qryInsOrderDetails(?,?,?,?) }";
 
     /**
      * Private constructor for singleton purposes.
@@ -97,43 +111,21 @@ public class OrderLogic {
     // READ ORDERS FROM DB
     ////////////////////////////////////////////////////////////////
 
-
-    public ArrayList<Shipper> getshippers() {
-        ArrayList<Shipper> results = new ArrayList<Shipper>();
-
-        try {
-            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
-            try (Connection conn = DriverManager.getConnection(Consts.CONN_STR);
-                    PreparedStatement stmt = conn.prepareStatement(Consts.SQL_SEL_SHIPPERS);
-                    ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    int i = 1;
-                    results.add(new Shipper(rs.getLong(i++), rs.getString(i++)));
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        return results;
-    }
-
     public ArrayList<Order> getOrders() {
         ArrayList<Order> results = new ArrayList<Order>();
 
         try {
             Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
             try (Connection conn = DriverManager.getConnection(Consts.CONN_STR);
-                    PreparedStatement stmt = conn.prepareStatement(Consts.SQL_SEL_ORDERS);
+                    PreparedStatement stmt = conn.prepareStatement(SQL_SEL_ORDERS);
                     ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     int i = 1;
-                    results.add(new Order(rs.getLong(i++), rs.getString(i++),
-                            rs.getLong(i++), rs.getDate(i++), rs.getDate(i++),
-                            rs.getDate(i++), rs.getInt(i++), rs.getString(i++),
-                            rs.getString(i++), rs.getString(i++)));
+                    results.add(new Order(rs.getLong(i++), CustomerLogic.getInstance().getCustomer(rs.getString(i++)),
+                            EmployeeLogic.getInstance().getEmployee(rs.getLong(i++)) , 
+                            rs.getDate(i++),rs.getDate(i++),rs.getDate(i++),
+                            ShipperLogic.getInstance().getShipper(rs.getLong(i++)), 
+                            rs.getString(i++),rs.getString(i++), rs.getString(i++)));
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -160,7 +152,7 @@ public class OrderLogic {
             Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
 
             try (Connection conn = DriverManager.getConnection(Consts.CONN_STR);
-                    CallableStatement stmt = conn.prepareCall(Consts.SQL_ADD_ORDER)) {
+                    CallableStatement stmt = conn.prepareCall(SQL_ADD_ORDER)) {
                 int i = 1;
 
                 stmt.setString(i++, customerID); // can't be null
@@ -253,7 +245,7 @@ public class OrderLogic {
             Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
 
             try (Connection conn = DriverManager.getConnection(Consts.CONN_STR);
-                    CallableStatement stmt1 = conn.prepareCall(Consts.SQL_DEL_ORDER_DETAILS);
+                    CallableStatement stmt1 = conn.prepareCall(SQL_DEL_ORDER_DETAILS);
 
             ) {
                 stmt1.setLong(1, orderID);
@@ -265,7 +257,7 @@ public class OrderLogic {
 
             try (Connection conn = DriverManager.getConnection(Consts.CONN_STR);
 
-                    CallableStatement stmt2 = conn.prepareCall(Consts.SQL_DEL_ORDER)) {
+                    CallableStatement stmt2 = conn.prepareCall(SQL_DEL_ORDER)) {
 
                 stmt2.setLong(1, orderID);
                 stmt2.executeUpdate();
@@ -286,7 +278,7 @@ public class OrderLogic {
             Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
 
             try (Connection conn = DriverManager.getConnection(Consts.CONN_STR);
-                    CallableStatement stmt = conn.prepareCall(Consts.SQL_UPD_ORDER)) {
+                    CallableStatement stmt = conn.prepareCall(SQL_UPD_ORDER)) {
                 int i = 1;
 
                 stmt.setString(i++, customerID); // can't be null
@@ -339,7 +331,7 @@ public class OrderLogic {
         try {
             Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
             try (Connection conn = DriverManager.getConnection(Consts.CONN_STR);
-                    PreparedStatement stmt = conn.prepareStatement(Consts.SQL_SEL_ORDER_DETAILS);) {
+                    PreparedStatement stmt = conn.prepareStatement(SQL_SEL_ORDER_DETAILS);) {
 
                 stmt.setLong(1, orderID);
                 ResultSet rs = stmt.executeQuery();
@@ -377,7 +369,7 @@ public class OrderLogic {
 
             try (
                     Connection conn = DriverManager.getConnection(Consts.CONN_STR);
-                    CallableStatement stmt = conn.prepareCall(Consts.SQL_UPD_ORDER_DETAILS)) {
+                    CallableStatement stmt = conn.prepareCall(SQL_UPD_ORDER_DETAILS)) {
 
                 int i = 1;
 
@@ -408,7 +400,7 @@ public class OrderLogic {
 
             try (
                     Connection conn = DriverManager.getConnection(Consts.CONN_STR);
-                    CallableStatement stmt = conn.prepareCall(Consts.SQL_INS_ORDER_DETAILS)) {
+                    CallableStatement stmt = conn.prepareCall(SQL_INS_ORDER_DETAILS)) {
 
                 int i = 1;
 
@@ -433,7 +425,7 @@ public class OrderLogic {
             Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
 
             try (Connection conn = DriverManager.getConnection(Consts.CONN_STR);
-                    CallableStatement stmt1 = conn.prepareCall(Consts.SQL_DEL_ORDER_DETAILS_PRODUCT);
+                    CallableStatement stmt1 = conn.prepareCall(SQL_DEL_ORDER_DETAILS_PRODUCT);
 
             ) {
                 stmt1.setLong(1, orderID);
